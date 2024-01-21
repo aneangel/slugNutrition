@@ -5,3 +5,4 @@
 *.txt
 ./github/*
 ./functions/venv/*
+node_modules
