@@ -4,3 +4,4 @@
 *.rules
 *.txt
 ./github/*
+./functions/venv/*
