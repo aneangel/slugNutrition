@@ -1,2 +1,6 @@
-# Whitelist rules for git and repo
-*
+# Blacklist rules for git and repo
+./src/firebaseConfigKeys.js
+*.firebaseserc
+*.rules
+*.txt
+./github/*
