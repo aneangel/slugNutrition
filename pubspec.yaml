@@ -1,0 +1,47 @@
+name: slugnutrition
+description: "UCSC personalized menu plans"
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.6 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  google_fonts: ^6.1.0
+  flutter_native_splash: ^2.3.10
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter_native_splash:
+  color: "#f7f6f1"
+  color_dark: "#272727"
+  image: assets/images/books.jpg
+  image_dark: assets/images/books.jpg
+
+  android_12:
+    image: assets/images/books.jpg
+    icon_background_color: "#f7f6f1"
+    image_dark: assets/images/books.jpg
+    icon_background_color_dark: "#272727"
+
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/books.jpg
+    - assets/images/omlette.png
+    - assets/logo/logo.png
+    - assets/images/bread.png
+
+
