@@ -12,33 +12,19 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   google_fonts: ^3.0.1
-  flutter_native_splash: ^2.3.10
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
 
-flutter_native_splash:
-  color: "#f7f6f1"
-  dark_color: "#272727"
-  image: assets/images/books.jpg
-  image_dark: assets/images/books.jpg
-
-  android_12:
-    image: assets/images/books.jpg
-    icon_background_color: "#f7f6f1"
-    image_dark: assets/images/books.jpg
-    icon_background_color_dark: "#272727"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-  assets:
-     - /images/books.jpg
-     - /images/omlette.png
+#  assets:
   # To add assets to your package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

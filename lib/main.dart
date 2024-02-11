@@ -1,6 +1,7 @@
 // Importing material.dart, which contains Flutter's Material Design widgets and theme.
 import 'package:flutter/material.dart';
 import '/src/utils/theme/theme.dart';
+import 'package:get/get.dart';
 import '/src/features/authentication/screens/splash_screen/splash_screen.dart';
 
 // The main entry point of the application. The arrow syntax is used for one-liner functions.
@@ -19,11 +20,11 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     // MaterialApp is a predefined class in Flutter that wraps several widgets that are commonly required for material design applications.
     // It's being created with a "const" constructor here for performance optimization.
-    return MaterialApp(
+    return GetMaterialApp(
       // home is one of the properties of MaterialApp. It defines the default route of the app (i.e., the starting point).
       // AppHome is a custom widget that would represent the main screen of the app.
-      theme: SAppTheme.lightTheme,
-      darkTheme: SAppTheme.darkTheme,
+      theme: TAppTheme.lightTheme,
+      darkTheme: TAppTheme.darkTheme,
       themeMode: ThemeMode.system,
       home: SplashScreen(),
     );
