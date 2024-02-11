@@ -63,5 +63,6 @@ flutter:
     - assets/images/onboarding_images/
     - assets/images/welcome_images/
     - assets/logo/
+    - assets/images/forget_password/
 
 
