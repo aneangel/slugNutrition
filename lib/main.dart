@@ -1,6 +1,7 @@
 // Importing material.dart, which contains Flutter's Material Design widgets and theme.
 import 'package:flutter/material.dart';
 import 'package:slugnutrition/src/features/authentication/controllers/signup_controller.dart';
+import 'package:slugnutrition/src/features/core/screens/bmi/bmi.dart';
 import '/src/utils/theme/theme.dart';
 import 'package:get/get.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -50,7 +51,6 @@ void main() async {
   runApp(const App());
 }
 
-
 // The App class is a StatelessWidget, which means its properties (or configuration) cannot change.
 // All StatelessWidget must override the build method.
 class App extends StatelessWidget {
@@ -70,7 +70,7 @@ class App extends StatelessWidget {
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: SplashScreen(),
+      home: BMICalculatorScreen(),
     );
   }
 }

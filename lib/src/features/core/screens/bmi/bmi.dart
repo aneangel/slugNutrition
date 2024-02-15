@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:slugnutrition/app.dart';
 import 'package:image_picker/image_picker.dart';
 
 class BMICalculatorScreen extends StatefulWidget {
@@ -38,7 +37,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
 
   void calculateBMI() {
     final heightInCm =
-    convertFeetInchesToCm(_heightController.text); // Height conversion
+        convertFeetInchesToCm(_heightController.text); // Height conversion
     final weightInKg = convertPoundsToKg(
         double.parse(_weightController.text)); // Weight conversion
 
@@ -120,8 +119,12 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.grey.shade200,
-                    backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
-                    child: _profileImage == null ? Icon(Icons.camera_alt, color: Colors.grey.shade800) : null,
+                    backgroundImage: _profileImage != null
+                        ? FileImage(_profileImage!)
+                        : null,
+                    child: _profileImage == null
+                        ? Icon(Icons.camera_alt, color: Colors.grey.shade800)
+                        : null,
                   ),
                 ),
               ),
@@ -130,7 +133,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                 controller: _heightController,
                 style: TextStyle(
                   color:
-                  Colors.black, // This sets the input text color to black
+                      Colors.black, // This sets the input text color to black
                 ),
                 decoration: InputDecoration(
                   labelStyle: TextStyle(
@@ -159,10 +162,10 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                   ),
                   suffixIcon: Container(
                     width:
-                    150, // Give it an appropriate size to fit the buttons
+                        150, // Give it an appropriate size to fit the buttons
                     child: Row(
                       mainAxisAlignment:
-                      MainAxisAlignment.end, // Align to the right
+                          MainAxisAlignment.end, // Align to the right
                       children: [
                         TextButton(
                           style: TextButton.styleFrom(
@@ -175,7 +178,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                         ),
                         Container(
                           height:
-                          20, // Adjust the height to fit within the input field
+                              20, // Adjust the height to fit within the input field
                           child: VerticalDivider(
                             color: Colors.black, // Color of the vertical bar
                             width: 20, // Space it takes horizontally
@@ -219,7 +222,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
               TextFormField(
                 style: TextStyle(
                   color:
-                  Colors.black, // This sets the input text color to black
+                      Colors.black, // This sets the input text color to black
                 ),
                 decoration: InputDecoration(
                   labelStyle: TextStyle(
@@ -248,10 +251,10 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                   ),
                   suffixIcon: Container(
                     width:
-                    150, // Give it an appropriate size to fit the buttons
+                        150, // Give it an appropriate size to fit the buttons
                     child: Row(
                       mainAxisAlignment:
-                      MainAxisAlignment.end, // Align to the right
+                          MainAxisAlignment.end, // Align to the right
                       children: [
                         TextButton(
                           style: TextButton.styleFrom(
@@ -265,7 +268,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                         ),
                         Container(
                           height:
-                          20, // Adjust the height to fit within the input field
+                              20, // Adjust the height to fit within the input field
                           child: VerticalDivider(
                             color: Colors.black, // Color of the vertical bar
                             width: 20, // Space it takes horizontally
