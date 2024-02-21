@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# Whitelist rules for git and repo
-*
-=======
 # Miscellaneous
 *.class
 *.log
@@ -45,4 +41,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
->>>>>>> master
+
+# Authentication security Key must never be on public repository
+slugnutrition-firebase-adminsdk-*.json
