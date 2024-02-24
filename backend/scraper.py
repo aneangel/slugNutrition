@@ -29,7 +29,21 @@ dining_halls = ['College Nine/John R. Lewis Dining Hall', 'Cowell/Stevenson Dini
 
 # Loop through each dining hall
 for hall in dining_halls:
+    egg_dishes = []  # Initialize list to store egg dishes for the current dining hall
     vegan_dishes = []  # Initialize list to store vegan dishes for the current dining hall
+    fish_dishes = []  # Initialize list to store fish dishes for the current dining hall
+    vegetarian_dishes = []  # Initialize list to store vegitarian dishes for the current dining hall
+    gluten_dishes = []  # Initialize list to store gluten dishes for the current dining hall
+    pork_dishes = []  # Initialize list to store pork dishes for the current dining hall
+    milk_dishes = []  # Initialize list to store milk dishes for the current dining hall
+    beef_dishes = []  # Initialize list to store beef dishes for the current dining hall
+    peanut_dishes = []  # Initialize list to store peanut dishes for the current dining hall
+    halal_dishes = []  # Initialize list to store halal dishes for the current dining hall
+    soy_dishes = []  # Initialize list to store soy dishes for the current dining hall
+    shellfish_dishes = []  # Initialize list to store shellfish dishes for the current dining hall
+    treenut_dishes = []  # Initialize list to store treenut dishes for the current dining hall
+    sesame_dishes = []  # Initialize list to store sesame dishes for the current dining hall
+    alcohol_dishes = []  # Initialize list to store alcohol dishes for the current dining hall
     try:
         print(f"Entering {hall}...")  # Print message when entering a dining hall
 
@@ -48,9 +62,30 @@ for hall in dining_halls:
         driver.find_element(By.LINK_TEXT, "Nutrition Calculator").click()
 
         # Find all vegan markers
+        egg_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/eggs.gif']")
         vegan_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/vegan.gif']")
+        fish_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/fish.gif']")
+        vegetarian_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/veggie.gif']")
+        gluten_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/gluten.gif']")
+        pork_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/pork.gif']")
+        milk_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/milk.gif']")
+        beef_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/beef.gif']")
+        peanut_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/nuts.gif']")
+        halal_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/halal.gif']")
+        soy_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/soy.gif']")
+        shellfish_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/shellfish.gif']")
+        treenut_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/treenut.gif']")
+        sesame_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/sesame.gif']")
+        alcohol_markers = driver.find_elements(By.XPATH, "//img[@src='LegendImages/alcohol.gif']")
 
-        # Process each vegan item
+        #Processing egg dishes
+        for marker in egg_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Egg dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        #Process each vegan item
         for marker in vegan_markers:
             # Get the parent element and then find the dish name within that element
             parent_element = marker.find_element(By.XPATH, "../..")  # Adjust according to the actual structure
@@ -60,12 +95,121 @@ for hall in dining_halls:
 
             # Additional logic to interact with the dish (e.g., clicking checkboxes)
             # ...
+        
+        #Processing fish dishes
+        for marker in fish_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Fish dish found: {dish_name}")
+            egg_dishes.append(dish_name)
 
+        # Processing each dietary restriction
+        for marker in vegetarian_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Vegitarian dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        for marker in gluten_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Gluten dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        for marker in pork_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Pork dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        for marker in milk_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Milk dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        for marker in beef_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Beef dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+        
+        for marker in peanut_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Peanut dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+        
+        for marker in halal_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Halal dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        for marker in soy_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Soy dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        for marker in shellfish_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Shellfish dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        for marker in treenut_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Treenut dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        for marker in sesame_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Sesame dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        for marker in alcohol_markers:
+            parent_element = marker.find_element(By.XPATH, "../..")
+            dish_name = parent_element.find_element(By.CLASS_NAME, "longmenucoldispname").text
+            print(f"Alcohol dish found: {dish_name}")
+            egg_dishes.append(dish_name)
+
+        print(egg_dishes)
+        print(vegan_dishes)
+        print(fish_dishes)
+        print(vegetarian_dishes)
+        print(gluten_dishes)
+        print(pork_dishes)
+        print(milk_dishes)
+        print(beef_dishes)
         # After collecting all vegan dishes for the dining hall, upload to Firestore
         hall_doc_id = hall.replace('/', '').replace(' ', '')  # Simplify hall name to use as document ID
-        db.collection('Dining Hall Data').document(hall_doc_id).set({
-            'vegan_dishes': vegan_dishes
-        })
+        # db.collection('Dining Hall Data').document(hall_doc_id).set({
+        #     'vegan_dishes': vegan_dishes
+        # })
+
+        # Firestore upload for all categories
+        hall_doc_ref = db.collection('Dining Hall Menus').document(hall_doc_id)  # Consider a more structured collection name
+        hall_doc_ref.set({
+            'egg_dishes': egg_dishes,
+            'vegan_dishes': vegan_dishes,
+            'fish_dishes': fish_dishes,
+            'vegetarian_dishes': vegetarian_dishes,
+            'gluten_dishes': gluten_dishes,
+            'pork_dishes': pork_dishes,
+            'milk_dishes': milk_dishes,
+            'beef_dishes': beef_dishes,
+            'peanut_dishes': peanut_dishes,
+            'halal_dishes': halal_dishes,
+            'soy_dishes': soy_dishes,
+            'shellfish_dishes': shellfish_dishes,
+            'treenut_dishes': treenut_dishes,
+            'sesame_dishes': sesame_dishes,
+            'alcohol_dishes': alcohol_dishes
+        }, merge=True)  # Using merge=True to update or create without deleting existing fields
+
 
     except Exception as e:
         print(f"An error occurred while processing {hall}: {e}")
