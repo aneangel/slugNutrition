@@ -247,7 +247,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                       children: [
                         TextButton(
                           style: TextButton.styleFrom(
-                            primary: _selectedUnit == 'cm'
+                            foregroundColor: _selectedUnit == 'cm'
                                 ? Colors.purple
                                 : Colors.grey,
                           ),
@@ -265,7 +265,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                         ),
                         TextButton(
                           style: TextButton.styleFrom(
-                            primary: _selectedUnit == 'ft'
+                            foregroundColor: _selectedUnit == 'ft'
                                 ? Colors.purple
                                 : Colors.grey,
                           ),
@@ -336,7 +336,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                       children: [
                         TextButton(
                           style: TextButton.styleFrom(
-                            primary: _selectedWUnit == 'kg'
+                            foregroundColor: _selectedWUnit == 'kg'
                                 ? Colors.purple
                                 : Colors.grey,
                           ),
@@ -357,7 +357,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                         ),
                         TextButton(
                           style: TextButton.styleFrom(
-                            primary: _selectedWUnit == 'lbs'
+                            foregroundColor: _selectedWUnit == 'lbs'
                                 ? Colors.purple
                                 : Colors.grey,
                           ),
