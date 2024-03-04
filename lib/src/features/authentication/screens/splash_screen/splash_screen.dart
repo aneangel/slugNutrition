@@ -6,9 +6,6 @@ import '/src/constants/colors.dart';
 import 'package:get/get.dart';
 import '/src/features/authentication/screens/welcome/welcome_screen.dart';
 import '/src/features/authentication/screens/on_boarding/on_boarding_screen.dart';
-import '../../../../utils/animations/fade_in_animation/animation_design.dart';
-import '../../../../utils/animations/fade_in_animation/fade_in_animation_controller.dart';
-import '../../../../utils/animations/fade_in_animation/fade_in_animation_model.dart';
 
 
 // class SplashScreen extends StatelessWidget {
