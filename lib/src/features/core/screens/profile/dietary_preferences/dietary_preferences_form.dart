@@ -312,8 +312,8 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: Colors.grey.shade400)),
               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: Colors.purple)),
-              floatingLabelStyle: TextStyle(color: Colors.purple),
-              floatingLabelBehavior: FloatingLabelBehavior.always, // Ensures the label always floats
+              //floatingLabelStyle: TextStyle(color: Colors.purple),
+              //floatingLabelBehavior: FloatingLabelBehavior.always, // Ensures the label always floats
             ),
             value: null, // The value is always null so the hint is displayed
             hint: Text(key, style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.w300)), // Style for the hint
