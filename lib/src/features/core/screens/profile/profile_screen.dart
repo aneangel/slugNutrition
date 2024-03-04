@@ -9,7 +9,7 @@ import '/src/features/core/screens/profile/update_profile_screen.dart';
 import '/src/features/core/screens/profile/widgets/image_with_icon.dart';
 import '/src/features/core/screens/profile/widgets/profile_menu.dart';
 import '/src/features/core/screens/profile/all_users.dart';
-import '/src/features/core/screens/dietary_preferences/dietary_preferences_form.dart';
+import '/src/features/core/screens/profile/dietary_preferences/dietary_preferences_form.dart';
 import '../../../../repository/authentication_repository/authentication_repository.dart';
 
 class ProfileScreen extends StatelessWidget {
