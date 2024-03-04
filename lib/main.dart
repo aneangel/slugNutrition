@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:slugnutrition/src/features/authentication/controllers/signup_controller.dart';
 import 'package:slugnutrition/src/features/core/screens/bmi/bmi.dart';
 import 'package:slugnutrition/src/features/core/screens/dashboard/dashboard.dart';
+import 'package:slugnutrition/src/features/core/screens/profile/profile_screen.dart';
 import '/src/utils/theme/theme.dart';
 import 'package:get/get.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -16,6 +17,7 @@ import '/src/repository/authentication_repository/authentication_repository.dart
 import '/src/repository/user_repository/user_repository.dart';
 import '/src/features/authentication/screens/signup/signup_screen.dart';
 import '/src/features/authentication/controllers/signup_controller.dart';
+import '/src/features/core/screens/dietary_preferences/dietary_preferences_form.dart';
 
 // import 'app.dart';
 

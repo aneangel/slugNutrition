@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:slugnutrition/src/features/core/screens/bmi/bmi.dart';
 import '/src/common_widgets/buttons/primary_button.dart';
 import '/src/constants/sizes.dart';
 import '/src/constants/text_strings.dart';
@@ -8,7 +9,7 @@ import '/src/features/core/screens/profile/update_profile_screen.dart';
 import '/src/features/core/screens/profile/widgets/image_with_icon.dart';
 import '/src/features/core/screens/profile/widgets/profile_menu.dart';
 import '/src/features/core/screens/profile/all_users.dart';
-
+import '/src/features/core/screens/dietary_preferences/dietary_preferences_form.dart';
 import '../../../../repository/authentication_repository/authentication_repository.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -47,13 +48,13 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 10),
 
               /// -- MENU
-              ProfileMenuWidget(title: "Settings", icon: LineAwesomeIcons.cog, onPress: () {}),
-              ProfileMenuWidget(title: "Billing Details", icon: LineAwesomeIcons.wallet, onPress: () {}),
+              ProfileMenuWidget(title: "Forget/Update Password", icon: LineAwesomeIcons.key, onPress: () {}),
+              ProfileMenuWidget(title: "Update BMI", icon: LineAwesomeIcons.address_card, onPress: () => {}),
               ProfileMenuWidget(
-                  title: "User Management", icon: LineAwesomeIcons.user_check, onPress: () => Get.to(() => AllUsers())),
+                  title: "Update Dietary Preferences", icon: LineAwesomeIcons.utensils, onPress: () => Get.to(() => DietaryPreferencesForm())),
               const Divider(),
               const SizedBox(height: 10),
-              ProfileMenuWidget(title: "Information", icon: LineAwesomeIcons.info, onPress: () {}),
+              ProfileMenuWidget(title: "FAQs", icon: LineAwesomeIcons.question_circle, onPress: () {}),
               ProfileMenuWidget(
                 title: "Logout",
                 icon: LineAwesomeIcons.alternate_sign_out,
