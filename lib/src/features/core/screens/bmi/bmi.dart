@@ -18,6 +18,36 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
   String _selectedUnit = 'cm';
   String _selectedWUnit = 'kg';
   File? _profileImage;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+
+  // Define the list of activity levels
+  final List<String> _activityLevels = [
+    'Sedentary (little or no exercise)',
+    'Lightly active (light exercise/sports 1-3 days a week)',
+    'Moderately active (moderate exercise/sports 3-5 days a week)',
+    'Very active (hard exercise/sports 6-7 days a week)',
+    'Super active (very hard exercise & a physical job)'
+  ];
+
+// Variable to hold the current selection
+  String _selectedActivityLevel = 'Sedentary (little or no exercise)';
+
+  int _selectedGenderIndex = 0; // 0 for male, 1 for female
+  List<bool> _isSelectedGender = [
+    true,
+    false,
+    false
+  ]; // Male is selected by default
+
+  void _handleGenderSelection(int index) {
+    setState(() {
+      for (int i = 0; i < _isSelectedGender.length; i++) {
+        _isSelectedGender[i] = i == index;
+      }
+      _selectedGenderIndex = index;
+    });
+  }
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -37,18 +67,42 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
   }
 
   void calculateBMI() {
-    final heightInCm =
-    convertFeetInchesToCm(_heightController.text); // Height conversion
-    final weightInKg = convertPoundsToKg(
-        double.parse(_weightController.text)); // Weight conversion
+    print("calculateBMI called");
+    double heightInCm = 0;
+    double weightInKg = 0;
 
-    if (heightInCm > 0) {
+    // Debugging: print the selected units
+    print("Selected height unit: $_selectedUnit");
+    print("Selected weight unit: $_selectedWUnit");
+
+    // Assuming you have validation in place and users can switch between units
+    if (_selectedUnit == 'cm') {
+      heightInCm = double.tryParse(_heightController.text) ?? 0;
+    } else if (_selectedUnit == 'ft') {
+      heightInCm = convertFeetInchesToCm(_heightController.text);
+    }
+
+    if (_selectedWUnit == 'kg') {
+      weightInKg = double.tryParse(_weightController.text) ?? 0;
+    } else if (_selectedWUnit == 'lbs') {
+      weightInKg =
+          convertPoundsToKg(double.tryParse(_weightController.text) ?? 0);
+    }
+
+    // Debugging: print the parsed values
+    print("Parsed height in cm: $heightInCm");
+    print("Parsed weight in kg: $weightInKg");
+
+    if (heightInCm > 0 && weightInKg > 0) {
       final heightInMeters = heightInCm / 100;
       final bmi = weightInKg / (heightInMeters * heightInMeters);
-      // Use the BMI value for your logic
-      print("BMI is $bmi");
+      print("Calculated BMI: $bmi");
+      setState(() {
+        _bmi = bmi;
+      });
     } else {
-      // Handle error: invalid height input
+      // Handle error: invalid height or weight input
+      print("Invalid input for height or weight");
     }
   }
 
@@ -102,13 +156,13 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('BMI Calculator'),
+        title: Text('COMPLETE YOUR PROFILE'),
         backgroundColor: Colors.white,
         elevation: 0, // Removes shadow
         foregroundColor: Colors.black, // Text color
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(25.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -120,12 +174,41 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.grey.shade200,
-                    backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
-                    child: _profileImage == null ? Icon(Icons.camera_alt, color: Colors.grey.shade800) : null,
+                    backgroundImage: _profileImage != null
+                        ? FileImage(_profileImage!)
+                        : null,
+                    child: _profileImage == null
+                        ? Icon(Icons.camera_alt, color: Colors.grey.shade800)
+                        : null,
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
+              TextFormField(
+                  controller: _nameController,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey.shade600,
+                    ),
+                    labelText: 'Name',
+                    contentPadding: EdgeInsets.all(15),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                      borderSide: BorderSide(color: Colors.grey.shade400),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                      borderSide: BorderSide(color: Colors.purple),
+                    ),
+                    floatingLabelStyle: TextStyle(
+                      color: Colors.purple,
+                    ),
+                  )),
+              SizedBox(height: 30),
               TextFormField(
                 controller: _heightController,
                 style: TextStyle(
@@ -139,10 +222,9 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                         .shade600, // Changes the color of the labelText (placeholder)
                   ),
                   labelText: 'Height',
-                  contentPadding: EdgeInsets.only(
-                      left: 20,
-                      top: 14,
-                      bottom: 14), // Adjust these values as needed
+                  contentPadding:
+                  EdgeInsets.only(left: 20, top: 14, bottom: 14),
+                  // Adjust these values as needed
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15.0),
                     borderSide: BorderSide(
@@ -215,8 +297,9 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               TextFormField(
+                controller: _weightController,
                 style: TextStyle(
                   color:
                   Colors.black, // This sets the input text color to black
@@ -228,10 +311,9 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                         .shade600, // Changes the color of the labelText (placeholder)
                   ),
                   labelText: 'Weight',
-                  contentPadding: EdgeInsets.only(
-                      left: 20,
-                      top: 14,
-                      bottom: 14), // Adjust these values as needed
+                  contentPadding:
+                  EdgeInsets.only(left: 20, top: 14, bottom: 14),
+                  // Adjust these values as needed
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15.0),
                     borderSide: BorderSide(
@@ -259,8 +341,10 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                                 ? Colors.purple
                                 : Colors.grey,
                           ),
-                          onPressed: () =>
-                              setState(() => _selectedWUnit = 'kg'),
+                          onPressed: () {
+                            setState(() => _selectedWUnit = 'kg');
+                            print('Weight unit set to $_selectedWUnit');
+                          },
                           child: Text('kg'),
                         ),
                         Container(
@@ -278,8 +362,10 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                                 ? Colors.purple
                                 : Colors.grey,
                           ),
-                          onPressed: () =>
-                              setState(() => _selectedWUnit = 'lbs'),
+                          onPressed: () {
+                            setState(() => _selectedWUnit = 'lbs');
+                            print('Weight unit set to $_selectedWUnit');
+                          },
                           child: Text('lbs'),
                         ),
                       ],
@@ -288,17 +374,143 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                 ),
                 keyboardType: TextInputType.number,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      calculateBMI();
-                    }
+              SizedBox(height: 30),
+              TextFormField(
+                controller: _ageController,
+                decoration: InputDecoration(
+                  labelStyle: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey
+                        .shade600, // Changes the color of the labelText (placeholder)
+                  ),
+                  labelText: 'Age',
+                  contentPadding:
+                  EdgeInsets.only(left: 20, top: 14, bottom: 14),
+                  // Adjust these values as needed
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(
+                        color: Colors.grey.shade400), // Default Border Color
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    // Border style when the input field is focused
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.purple),
+                  ),
+                  floatingLabelStyle: TextStyle(
+                    color: Colors
+                        .purple, // Optional: Use this to change floating label color when focused
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value != null && int.tryParse(value) == null) {
+                    return 'Please enter a valid age';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 30), // Provides spacing between input fields
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Activity Level',
+                  contentPadding:
+                  EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade400,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide(color: Colors.purple),
+                  ),
+                  floatingLabelStyle: TextStyle(
+                    color: Colors.purple,
+                  ),
+                ),
+                value: _selectedActivityLevel,
+                items: _activityLevels
+                    .map<DropdownMenuItem<String>>((String level) {
+                  return DropdownMenuItem<String>(
+                    value: level,
+                    child: Text(level, style: TextStyle(fontSize: 14)),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedActivityLevel = newValue!;
+                  });
+                },
+                selectedItemBuilder: (BuildContext context) {
+                  return _activityLevels.map<Widget>((String level) {
+                    return Text(level.split(' (')[0],
+                        style: TextStyle(
+                            fontSize: 14)); // Extract text before the brackets
+                  }).toList();
+                },
+              ),
+
+              SizedBox(height: 30),
+              Center(
+                child: ToggleButtons(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(16.0),
+                      // Add some padding for better visual appearance
+                      child: Text('Male'),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(16.0),
+                      // Add some padding for better visual appearance
+                      child: Text('Female'),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(16.0),
+                      // Add some padding for better visual appearance
+                      child: Text('Others'),
+                    ),
+                  ],
+                  onPressed: (int index) {
+                    _handleGenderSelection(index);
                   },
-                  child: Text('Calculate BMI'),
+                  isSelected: _isSelectedGender,
+                  color: Colors.grey,
+                  selectedColor: Colors.purple,
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  renderBorder: false,
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
+              SizedBox(height: 30),
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Your validation logic or function call
+                        calculateBMI();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white, // Background color
+                      foregroundColor: Colors.purple.shade600, // Text color
+                      side: BorderSide(color: Colors.grey.shade700, width: 2), // Border color and width
+                      padding: EdgeInsets.symmetric(vertical: 12.0), // Increase padding to ensure text fits well
+                      textStyle: TextStyle(fontSize: 18,), // Increase fontSize here
+                      // Fixed size for the button, adjust width and height as needed
+                      minimumSize: Size(200, 50), // Set a minimum size for the button
+                    ),
+                    child: Text('Next'),
+                  ),
+                ),
+              ),
+
               if (_bmi > 0)
                 Text(
                   'Your BMI is ${_bmi.toStringAsFixed(2)}',
