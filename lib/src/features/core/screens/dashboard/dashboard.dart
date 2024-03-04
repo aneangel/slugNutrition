@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:slugnutrition/src/features/core/screens/dietary_preferences/dietary_preferences_form.dart';
+import 'package:slugnutrition/src/features/core/screens/profile/dietary_preferences/dietary_preferences_form.dart';
 import '/src/constants/image_strings.dart';
 import '/src/constants/sizes.dart';
 import '/src/constants/text_strings.dart';
