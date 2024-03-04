@@ -12,8 +12,6 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   double _bmi = 0;
-  String _heightUnit = 'cm'; // Default unit
-  String _weightUnit = 'kg'; // Default unit
   String _selectedUnit = 'cm';
   String _selectedWUnit = 'kg';
   File? _profileImage;
@@ -35,22 +33,6 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
     }
   }
 
-  void calculateBMI() {
-    final heightInCm =
-        convertFeetInchesToCm(_heightController.text); // Height conversion
-    final weightInKg = convertPoundsToKg(
-        double.parse(_weightController.text)); // Weight conversion
-
-    if (heightInCm > 0) {
-      final heightInMeters = heightInCm / 100;
-      final bmi = weightInKg / (heightInMeters * heightInMeters);
-      // Use the BMI value for your logic
-      print("BMI is $bmi");
-    } else {
-      // Handle error: invalid height input
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -66,45 +48,82 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
   }
 
   void _formatHeightInput() {
-    String text = _heightController.text;
+    if (_selectedUnit == 'ft') {
+      final text = _heightController.text;
+      // Regex to match feet and optional inches with or without quotes
+      final regex = RegExp(r'^(\d+)' r"'?" r'(\d{0,2})' r'"?$');
 
-    // This is a basic implementation and might need adjustments
-    // to handle edge cases and improve usability.
-    if (_selectedUnit == 'ft' &&
-        text.isNotEmpty &&
-        !text.contains("'") &&
-        text.length <= 2) {
-      text += "'"; // Append a single quote to indicate feet
-      _heightController.value = TextEditingValue(
-        text: text,
-        selection: TextSelection.collapsed(offset: text.length),
-      );
+      if (regex.hasMatch(text)) {
+        final match = regex.firstMatch(text)!;
+        String feet = match.group(1)!;
+        String inches = match.group(2)!;
+
+        // Check if the last character is a digit or a quote
+        bool isLastCharDigit = text.isNotEmpty && '0123456789'.contains(text[text.length - 1]);
+
+        // If inches are 2 digits long, or the last character is not a digit, auto-format with a closing quote
+        if (inches.length == 2 || (!isLastCharDigit && inches.isNotEmpty)) {
+          inches += '"';
+        }
+
+        // Rebuild the formatted text only if inches are present or the last character is a quote
+        if (inches.isNotEmpty || text.endsWith('"')) {
+          String formattedText = "$feet'$inches";
+          // Update the controller text without moving the cursor to the end
+          TextEditingValue value = TextEditingValue(
+            text: formattedText,
+            selection: TextSelection.collapsed(offset: _heightController.selection.baseOffset),
+          );
+
+          // Prevent cursor from moving to the end when deleting characters
+          if (value.text.length >= _heightController.value.text.length || text.endsWith('"')) {
+            _heightController.value = value;
+          }
+        }
+      }
     }
   }
 
+
   double convertFeetInchesToCm(String feetInches) {
     final parts = feetInches.split("'");
-    if (parts.length == 2) {
+    if (parts.length >= 1) {
       final feet = int.parse(parts[0]);
-      final inches = int.parse(parts[1]);
-      return ((feet * 12) + inches) * 2.54; // Convert total inches to cm
+      final inches = parts.length > 1 ? int.parse(parts[1].replaceAll('"', '')) : 0;
+      return ((feet * 12) + inches) * 2.54;
     }
-    return 0; // Default to 0 or handle error appropriately
+    return 0;
   }
 
   double convertPoundsToKg(double pounds) {
     return pounds * 0.453592;
   }
 
+  void calculateBMI() {
+    double heightInCm;
+    if (_selectedUnit == 'ft') {
+      heightInCm = convertFeetInchesToCm(_heightController.text);
+    } else {
+      heightInCm = double.parse(_heightController.text);
+    }
+
+    final weightInKg = _selectedWUnit == 'lbs'
+        ? convertPoundsToKg(double.parse(_weightController.text))
+        : double.parse(_weightController.text);
+
+    if (heightInCm > 0) {
+      final heightInMeters = heightInCm / 100;
+      setState(() {
+        _bmi = weightInKg / (heightInMeters * heightInMeters);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('BMI Calculator'),
-        backgroundColor: Colors.white,
-        elevation: 0, // Removes shadow
-        foregroundColor: Colors.black, // Text color
+        title: const Text('BMI Calculator'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -128,187 +147,58 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
               TextFormField(
                 controller: _heightController,
-                style: TextStyle(
-                  color:
-                      Colors.black, // This sets the input text color to black
-                ),
                 decoration: InputDecoration(
-                  labelStyle: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey
-                        .shade600, // Changes the color of the labelText (placeholder)
-                  ),
-                  labelText: 'Height',
-                  contentPadding: EdgeInsets.only(
-                      left: 20,
-                      top: 14,
-                      bottom: 14), // Adjust these values as needed
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: BorderSide(
-                        color: Colors.grey.shade400), // Default Border Color
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    // Border style when the input field is focused
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: BorderSide(color: Colors.purple),
-                  ),
-                  floatingLabelStyle: TextStyle(
-                    color: Colors
-                        .purple, // Optional: Use this to change floating label color when focused
-                  ),
-                  suffixIcon: Container(
-                    width:
-                        150, // Give it an appropriate size to fit the buttons
-                    child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.end, // Align to the right
-                      children: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            primary: _selectedUnit == 'cm'
-                                ? Colors.purple
-                                : Colors.grey,
-                          ),
-                          onPressed: () => setState(() => _selectedUnit = 'cm'),
-                          child: Text('cm'),
-                        ),
-                        Container(
-                          height:
-                              20, // Adjust the height to fit within the input field
-                          child: VerticalDivider(
-                            color: Colors.black, // Color of the vertical bar
-                            width: 20, // Space it takes horizontally
-                            thickness: 1, // Thickness of the bar
-                          ),
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            primary: _selectedUnit == 'ft'
-                                ? Colors.purple
-                                : Colors.grey,
-                          ),
-                          onPressed: () => setState(() => _selectedUnit = 'ft'),
-                          child: Text('ft'),
-                        ),
-                      ],
-                    ),
-                  ),
+                  labelText: 'Height (${_selectedUnit == 'cm' ? 'cm' : 'ft'})',
                 ),
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value != null && value.contains("'")) {
-                    final parts = value.split("'");
-                    if (parts.length == 2) {
-                      final feet = int.tryParse(parts[0]);
-                      final inches = int.tryParse(parts[1]);
-                      if (feet == null || inches == null) {
-                        return 'Invalid format';
-                      }
-                      if (inches >= 11) {
-                        return 'Inches must be less than 12';
-                      }
-                    } else {
-                      return 'Invalid format';
-                    }
-                  }
-                  return null;
-                },
               ),
-              SizedBox(height: 20),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () => setState(() => _selectedUnit = 'cm'),
+                    child: Text('cm', style: TextStyle(color: _selectedUnit == 'cm' ? Colors.blue : Colors.grey)),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() => _selectedUnit = 'ft'),
+                    child: Text('ft', style: TextStyle(color: _selectedUnit == 'ft' ? Colors.blue : Colors.grey)),
+                  ),
+                ],
+              ),
               TextFormField(
-                style: TextStyle(
-                  color:
-                      Colors.black, // This sets the input text color to black
-                ),
+                controller: _weightController,
                 decoration: InputDecoration(
-                  labelStyle: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey
-                        .shade600, // Changes the color of the labelText (placeholder)
-                  ),
-                  labelText: 'Weight',
-                  contentPadding: EdgeInsets.only(
-                      left: 20,
-                      top: 14,
-                      bottom: 14), // Adjust these values as needed
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: BorderSide(
-                        color: Colors.grey.shade400), // Default Border Color
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    // Border style when the input field is focused
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: BorderSide(color: Colors.purple),
-                  ),
-                  floatingLabelStyle: TextStyle(
-                    color: Colors
-                        .purple, // Optional: Use this to change floating label color when focused
-                  ),
-                  suffixIcon: Container(
-                    width:
-                        150, // Give it an appropriate size to fit the buttons
-                    child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.end, // Align to the right
-                      children: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            primary: _selectedWUnit == 'kg'
-                                ? Colors.purple
-                                : Colors.grey,
-                          ),
-                          onPressed: () =>
-                              setState(() => _selectedWUnit = 'kg'),
-                          child: Text('kg'),
-                        ),
-                        Container(
-                          height:
-                              20, // Adjust the height to fit within the input field
-                          child: VerticalDivider(
-                            color: Colors.black, // Color of the vertical bar
-                            width: 20, // Space it takes horizontally
-                            thickness: 1, // Thickness of the bar
-                          ),
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            primary: _selectedWUnit == 'lbs'
-                                ? Colors.purple
-                                : Colors.grey,
-                          ),
-                          onPressed: () =>
-                              setState(() => _selectedWUnit = 'lbs'),
-                          child: Text('lbs'),
-                        ),
-                      ],
-                    ),
-                  ),
+                  labelText: 'Weight (${_selectedWUnit == 'kg' ? 'kg' : 'lbs'})',
                 ),
                 keyboardType: TextInputType.number,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () => setState(() => _selectedWUnit = 'kg'),
+                    child: Text('kg', style: TextStyle(color: _selectedWUnit == 'kg' ? Colors.blue : Colors.grey)),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() => _selectedWUnit = 'lbs'),
+                    child: Text('lbs', style: TextStyle(color: _selectedWUnit == 'lbs' ? Colors.blue : Colors.grey)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Center(
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       calculateBMI();
                     }
                   },
-                  child: Text('Calculate BMI'),
+                  child: const Text('Calculate BMI'),
                 ),
               ),
-              if (_bmi > 0)
-                Text(
-                  'Your BMI is ${_bmi.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    color: Colors.black, // Set the text color to black
-                  ),
-                ),
+              Center(
+                child: _bmi > 0 ? Text('Your BMI is ${_bmi.toStringAsFixed(2)}') : Container(),
+              ),
             ],
           ),
         ),
