@@ -64,7 +64,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     // MaterialApp is a predefined class in Flutter that wraps several widgets that are commonly required for material design applications.
     // It's being created with a "const" constructor here for performance optimization.
-    return GetMaterialApp(
+    return MaterialApp(
       // home is one of the properties of MaterialApp. It defines the default route of the app (i.e., the starting point).
       // AppHome is a custom widget that would represent the main screen of the app.
       theme: TAppTheme.lightTheme,
