@@ -3,6 +3,7 @@ import '/src/constants/image_strings.dart';
 import '/src/constants/sizes.dart';
 import '/src/constants/text_strings.dart';
 import '/src/features/core/screens/dashboard/widgets/appbar.dart';
+import '/src/features/core/screens/dashboard/widgets/diningHallGrid.dart';
 import '/src/features/core/screens/dashboard/widgets/banners.dart';
 import '/src/features/core/screens/dashboard/widgets/categories.dart';
 import '/src/features/core/screens/dashboard/widgets/search.dart';
@@ -75,56 +76,7 @@ class Dashboard extends StatelessWidget {
               const SizedBox(height: tDashboardPadding),
 
               // Wrapped GridView.builder in an Expanded widget
-              GridView.builder(
-                padding: const EdgeInsets.all(8), // Padding inside the GridView
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Number of columns
-                  crossAxisSpacing: 20, // Horizontal space between tiles
-                  mainAxisSpacing: 20, // Vertical space between tiles
-                  childAspectRatio: 1, // Aspect ratio of the tiles
-                ),
-                itemCount: diningHalls.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Card(
-                    color: Color(0xFFF5F5F7), // Very light gray with a slight blue undertone
-                    elevation: 10,
-                    shadowColor: Color.fromRGBO(0, 51, 102, 0.2), // Soft shadow with a hint of blue
-                    clipBehavior: Clip.antiAlias,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.topRight, // Align the image to the top right corner
-                          child: Container(
-                            width: 70, // Adjust the size as needed
-                            height: 70, // Adjust the size as needed
-                            child: Image.asset(
-                              diningHalls[index]['image']!,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          left: 8,
-                          bottom: 8,
-                          child: Text(
-                            diningHalls[index]['name']!,
-                            style: TextStyle(
-                              color: Color(0xFF003366), // Navy blue for text
-                              fontWeight: FontWeight.bold, // Make the text bold
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+              DiningHallGrid(diningHalls: diningHalls)
             ],
           ),
         ),
@@ -132,85 +84,3 @@ class Dashboard extends StatelessWidget {
     );
   }
 }
-
-// class Dashboard extends StatelessWidget {
-//   const Dashboard({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     //Variables
-//     final txtTheme = Theme.of(context).textTheme;
-//     final isDark = MediaQuery.of(context).platformBrightness == Brightness.dark; //Dark mode
-
-//     final List<Map<String, String>> diningHalls = [
-//       {
-//         'name': 'Oakes & Rachel-Carson',
-//         'image': 'assets/dining_hall_1.jpg', // Replace with your actual image paths
-//       },
-//       {
-//         'name': 'Porter & Kresge',
-//         'image': 'assets/dining_hall_2.jpg',
-//       },
-//       {
-//         'name': 'College 9 & John R Lewis',
-//         'image': 'assets/dining_hall_3.jpg',
-//       },
-//       {
-//         'name': 'Crown & Merill',
-//         'image': 'assets/dining_hall_4.jpg',
-//       },
-//       {
-//         'name': 'Cowell & Stevenson',
-//         'image': 'assets/dining_hall_5.jpg',
-//       },
-//       {
-//         'name': 'Cafes',
-//         'image': 'assets/Cafe.png',
-//       },
-//     ];
-
-//     return SafeArea(
-//       child: Scaffold(
-//         appBar: AppBar(
-//           title: Text('Dining Hall'),
-//         ),
-//         /// Create a new Header
-
-//         body: SingleChildScrollView(
-//           child: Container(
-//             padding: const EdgeInsets.all(tDashboardPadding),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-
-//                 // New code
-
-//                 // Old code
-//                 //Heading
-//                 Text(tDashboardTitle, style: txtTheme.bodyMedium),
-//                 Text(tDashboardHeading, style: txtTheme.displayMedium),
-//                 const SizedBox(height: tDashboardPadding),
-
-//                 //Search Box
-//                 DashboardSearchBox(txtTheme: txtTheme),
-//                 const SizedBox(height: tDashboardPadding),
-
-//                 //Categories
-//                 DashboardCategories(txtTheme: txtTheme),
-//                 const SizedBox(height: tDashboardPadding),
-
-//                 //Banners
-//                 DashboardBanners(txtTheme: txtTheme, isDark: isDark),
-//                 const SizedBox(height: tDashboardPadding),
-
-//                 //Top Course
-//                 Text(tDashboardTopCourses, style: txtTheme.headlineMedium?.apply(fontSizeFactor: 1.2)),
-//                 DashboardTopCourses(txtTheme: txtTheme, isDark: isDark)
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
