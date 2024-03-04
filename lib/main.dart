@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:slugnutrition/src/features/authentication/controllers/signup_controller.dart';
 import 'package:slugnutrition/src/features/core/screens/bmi/bmi.dart';
+import 'package:slugnutrition/src/features/core/screens/dashboard/dashboard.dart';
 import '/src/utils/theme/theme.dart';
 import 'package:get/get.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -64,13 +65,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     // MaterialApp is a predefined class in Flutter that wraps several widgets that are commonly required for material design applications.
     // It's being created with a "const" constructor here for performance optimization.
-    return MaterialApp(
+    return GetMaterialApp(
       // home is one of the properties of MaterialApp. It defines the default route of the app (i.e., the starting point).
       // AppHome is a custom widget that would represent the main screen of the app.
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: BMICalculatorScreen(),
+      home: Dashboard(),
     );
   }
 }

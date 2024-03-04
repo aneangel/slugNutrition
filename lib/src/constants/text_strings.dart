@@ -105,8 +105,8 @@ const String tBackToLogin = "Back to login";
 
 
 // -- Dashboard Screen - Text
-const String tDashboardTitle = "Hey, Coding with T";
-const String tDashboardHeading = "Explore Courses";
+const String tDashboardTitle = "Hey, <Username>";
+const String tDashboardHeading = "Discover Dining";
 const String tDashboardSearch = "Search...";
 const String tDashboardBannerTitle2 = "JAVA";
 const String tDashboardButton = "View All";

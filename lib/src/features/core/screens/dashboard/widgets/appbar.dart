@@ -19,7 +19,7 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       centerTitle: true,
       backgroundColor: Colors.transparent,
-      title: Text("Hi", style: Theme.of(context).textTheme.headlineMedium),
+      title: Text("Dashboard", style: Theme.of(context).textTheme.headlineMedium),
       actions: [
         Container(
           margin: const EdgeInsets.only(right: 20, top: 7),
