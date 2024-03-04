@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:slugnutrition/app.dart';
 import 'package:image_picker/image_picker.dart';
 
 class BMICalculatorScreen extends StatefulWidget {
@@ -486,7 +485,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 40),
               Center(
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 32.0),
