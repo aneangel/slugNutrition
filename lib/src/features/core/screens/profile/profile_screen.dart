@@ -48,10 +48,11 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 10),
 
               /// -- MENU
-              ProfileMenuWidget(title: "Forget/Update Password", icon: LineAwesomeIcons.key, onPress: () {}),
-              ProfileMenuWidget(title: "Update BMI", icon: LineAwesomeIcons.address_card, onPress: () => {}),
+              ProfileMenuWidget(title: "Update Password", icon: LineAwesomeIcons.key, onPress: () {}),
+              ProfileMenuWidget(title: "Update BMI", icon: LineAwesomeIcons.address_card, onPress: () => Get.to(() => BMICalculatorScreen())),
               ProfileMenuWidget(
                   title: "Update Dietary Preferences", icon: LineAwesomeIcons.utensils, onPress: () => Get.to(() => DietaryPreferencesForm())),
+              const SizedBox(height: 10),
               const Divider(),
               const SizedBox(height: 10),
               ProfileMenuWidget(title: "FAQs", icon: LineAwesomeIcons.question_circle, onPress: () {}),
