@@ -64,4 +64,3 @@ class UpdateProfileScreen extends StatelessWidget {
     );
   }
 }
-

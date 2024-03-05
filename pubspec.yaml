@@ -16,13 +16,14 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_fonts: ^6.1.0
   line_awesome_flutter: ^2.0.0
-  flutter_native_splash: ^2.3.6
   flutter_svg: ^2.0.9
   image_picker: ^1.0.7
   editable_image: ^2.0.0
 
   ## -- STATE MANAGEMENT
   get: ^4.6.6
+  flutter_riverpod: ^2.4.10
+
 
   ## -- OnBoarding PACKAGES
   liquid_swipe: ^3.0.0
@@ -30,7 +31,6 @@ dependencies:
 
   ## -- OTP TEXT FIELD PACKAGE
   flutter_otp_text_field: ^1.1.1
-
   ## -- FIREBASE PACKAGES
   firebase_core: ^2.24.0
   firebase_auth: ^4.15.0
@@ -40,29 +40,16 @@ dependencies:
   shared_preferences: ^2.2.2
 
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
 
-#flutter_native_splash:
-#  color: "#f7f6f1"
-#  color_dark: "#272727"
-#  image: assets/images/books.jpg
-#  image_dark: assets/images/books.jpg
-#
-#  android_12:
-#    image: assets/images/books.jpg
-#    icon_background_color: "#f7f6f1"
-#    image_dark: assets/images/books.jpg
-#    icon_background_color_dark: "#272727"
-
-
 flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/books.jpg
     - assets/logo/logo.png
     - assets/images/bread.png
     - assets/images/onboarding_images/
