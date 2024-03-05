@@ -4,6 +4,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:slugnutrition/src/constants/sizes.dart';
 import '../../../models/profile/dietary_preferences_model.dart';
 
@@ -152,6 +153,7 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
       children: [
         SizedBox(height: 8),
         DropdownButtonFormField<String>(
+          key: Key('dietaryRestrictionDropdown'),
           decoration: InputDecoration(
             // Use labelText for the floating label that appears when the dropdown is interacted with
             labelText: _selectedDietaryRestriction ?? 'Select your dietary preference',
@@ -208,6 +210,7 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
           ),
         ),
         CheckboxListTile(
+          key: Key('allergyNone'), // Key for the "None" checkbox
           title: Text('None'),
           value: _noneSelected,
           onChanged: (bool? newValue) {
@@ -231,6 +234,7 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
                 children: _allergies.entries
                     .where((entry) => entry.key != 'None')
                     .map((entry) => CheckboxListTile(
+                  key: Key('allergy${entry.key}'), // Dynamic key for each allergy checkbox
                   title: Text(entry.key),
                   value: entry.value,
                   onChanged: (bool? newValue) {
@@ -273,12 +277,6 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
   }
 
 
-
-
-
-
-
-
 //---------------------[WIDGET]:RELIGIOUS/CULTURAL LAWS-----------------------
 
 
@@ -292,6 +290,7 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
       children: [
         SizedBox(height: 2),
         DropdownButtonFormField<String>(
+          key: Key('religiousCulturalLawsDropdown'),
           decoration: InputDecoration(
             labelText: 'Select your dietary law',
             contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
@@ -330,7 +329,6 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
 
 
   Widget _buildAdditionalPreferencesSection() {
-    // Assuming you have a boolean to track if "None" is selected for preferences.
     bool _noneSelectedForPreferences = _preferences['None'] ?? false;
 
     return _buildSectionCard(
@@ -344,13 +342,13 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
           ),
         ),
         CheckboxListTile(
+          key: Key('preferenceNone'), // Key for the "None" checkbox
           title: Text('None'),
           value: _noneSelectedForPreferences,
           onChanged: (bool? newValue) {
             setState(() {
               _noneSelectedForPreferences = newValue!;
               if (_noneSelectedForPreferences) {
-                // If "None" is selected, uncheck all other preferences and hide them.
                 _preferences.forEach((key, value) {
                   _preferences[key] = false;
                 });
@@ -366,6 +364,7 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
             child: Column(
               children: _preferences.entries.where((entry) => entry.key != 'None').map((entry) {
                 return CheckboxListTile(
+                  key: Key('preference${entry.key.replaceAll(' ', '')}'), // Dynamic key for each preference checkbox
                   title: Text(entry.key),
                   value: entry.value,
                   onChanged: (bool? newValue) {
@@ -386,13 +385,10 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
 
 
 
-
-
   //--------------------[WIDGET]:FOOD DISLIKES---------------------------
 
 
   Widget _buildFoodDislikesSection() {
-    // Assuming you have a boolean to track if "None" is selected for food dislikes.
     bool _noneSelectedForDislikes = _dislikes['None'] ?? false;
 
     return _buildSectionCard(
@@ -406,13 +402,13 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
           ),
         ),
         CheckboxListTile(
+          key: Key('dislikeNone'), // Key for the "None" checkbox
           title: Text('None'),
           value: _noneSelectedForDislikes,
           onChanged: (bool? newValue) {
             setState(() {
               _noneSelectedForDislikes = newValue!;
               if (_noneSelectedForDislikes) {
-                // If "None" is selected, uncheck all other dislikes and hide them.
                 _dislikes.forEach((key, value) {
                   _dislikes[key] = false;
                 });
@@ -428,12 +424,12 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
             child: Column(
               children: _dislikes.entries.where((entry) => entry.key != 'None').map((entry) {
                 return CheckboxListTile(
+                  key: Key('dislike${entry.key.replaceAll(' ', '')}'), // Dynamic key for each dislike checkbox
                   title: Text(entry.key),
                   value: entry.value,
                   onChanged: (bool? newValue) {
                     setState(() {
                       _dislikes[entry.key] = newValue!;
-                      // Handle "Other" text field visibility
                       if (entry.key == 'Other') {
                         _showOtherDislikeTextField = newValue!;
                       }
@@ -475,6 +471,7 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10), // Adjust padding as needed
       child: SwitchListTile(
+        key: Key('consentSwitch'),
         title: Text(
           "I consent to the collection and use of my dietary preference information for meal planning purposes.",
           style: TextStyle(
@@ -514,6 +511,7 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
               color: _consent ? Colors.black : Colors.grey.shade200, // Dynamic background color based on `_consent`
             ),
             child: ElevatedButton(
+              key: Key('submitButton'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent, // Make the button itself transparent to show the AnimatedContainer color
                 disabledForegroundColor: Colors.grey.shade200.withOpacity(0.38),
