@@ -92,7 +92,6 @@ for hall in dining_halls:
                     if current_category:
                         menu[current_category].append({"name": dish_name, "images": dish_images})
 
-        # print(menu)
 
         # Initialize a new dictionary to hold the deduplicated menu
         deduplicated_menu = {}
