@@ -47,16 +47,6 @@ for hall in dining_halls:
         # Click the nutrition calculator link
         driver.find_element(By.LINK_TEXT, "Nutrition Calculator").click()
 
-        # # Find all category names
-        # categories = driver.find_elements(By.XPATH, "//div[@class='longmenucolmenucat']")
-        # for category in categories:
-        #     print(category.text)  # Prints category names like "--Breakfast--"
-        #
-        # # Find all dish names
-        # dishes = driver.find_elements(By.XPATH, "//div[@class='longmenucoldispname']/a")
-        # for dish in dishes:
-        #     print(dish.text)  # Prints dish names like "Hard-boiled Cage Free Egg"
-
         # Initialize a dictionary to hold the category and its dishes
         menu = {}
 
