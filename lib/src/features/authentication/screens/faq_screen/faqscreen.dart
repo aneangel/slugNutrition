@@ -74,18 +74,25 @@ class FAQScreen extends StatelessWidget {
       return Card(
         elevation: 4,
         margin: const EdgeInsets.symmetric(vertical: 8),
-        child: ExpansionTile(
-          leading: Icon(faq['icon'], color: Colors.black),
-          title: Text(faq['question'], style: questionTextStyle),
-          children: [
-            const Divider(color: Colors.grey, thickness: 1), // Added Divider
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(faq['answer'], style: answerTextStyle),
-            ),
-          ],
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent), // Make built-in dividers transparent
+          child: ExpansionTile(
+            leading: Icon(faq['icon'], color: Colors.black),
+            title: Text(faq['question'], style: questionTextStyle),
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0), // Adjust padding as needed
+                child: Divider(color: Colors.grey, thickness: 1), // Keep this Divider
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(faq['answer'], style: answerTextStyle),
+              ),
+            ],
+          ),
         ),
       );
     }).toList();
   }
+
 }
