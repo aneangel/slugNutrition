@@ -51,7 +51,7 @@ class SignUpController extends GetxController {
       final auth = AuthenticationRepository.instance;
       await auth.registerWithEmailAndPassword(user.email, user.password!);
       await UserRepository.instance.createUser(user);
-      auth.setInitialScreen(auth.firebaseUser);
+      auth.setInitialScreen();
 
     } catch (e) {
       isLoading.value = false;

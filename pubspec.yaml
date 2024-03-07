@@ -14,7 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  google_fonts: ^6.1.0
+  google_fonts: ^6.2.1
   line_awesome_flutter: ^2.0.0
   flutter_svg: ^2.0.9
   image_picker: ^1.0.7

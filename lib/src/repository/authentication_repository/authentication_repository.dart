@@ -6,6 +6,8 @@ import '/src/features/authentication/screens/mail_verification/mail_verification
 import '/src/features/authentication/screens/welcome/welcome_screen.dart';
 import '/src/features/core/screens/dashboard/dashboard.dart';
 import 'exceptions/t_exceptions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '/src/features/authentication/screens/on_boarding/on_boarding_screen.dart';
 
 // /// -- README(Docs[6]) -- Bindings
 class AuthenticationRepository extends GetxController {
@@ -28,22 +30,24 @@ class AuthenticationRepository extends GetxController {
   void onReady() {
     _firebaseUser = Rx<User?>(_auth.currentUser);
     _firebaseUser.bindStream(_auth.userChanges());
-    setInitialScreen(_firebaseUser.value);
+    setInitialScreen();
     // ever(_firebaseUser, _setInitialScreen);
   }
 
   /// Setting initial screen
-  setInitialScreen(User? user) async {
-    user == null
-        ? Get.offAll(() => const WelcomeScreen())
-        : user.emailVerified
-        ? Get.offAll(() => const Dashboard())
-        : Get.offAll(() => const MailVerification());
-
-    // Note: As per this code you will not see OnBoarding Screen on app launch.
-    // If you want to add that functionality please refer to this tutorial.
-    // https://www.youtube.com/watch?v=GYtMpccOOtU&t=78s
+  /// Setting initial screen with onboarding check
+  Future<void> setInitialScreen() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      // User is logged in, navigate to Dashboard
+      Get.offAll(() => const Dashboard());
+    } else {
+      // No user is logged in, navigate to Welcome Screen
+      Get.offAll(() => const WelcomeScreen());
+    }
   }
+
+
 
   /* ---------------------------- Email & Password sign-in ---------------------------------*/
 
@@ -51,6 +55,7 @@ class AuthenticationRepository extends GetxController {
   Future<void> loginWithEmailAndPassword(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+      Get.offAll(() => const Dashboard());
     } on FirebaseAuthException catch (e) {
       final result = TExceptions.fromCode(e.code); // Throw custom [message] variable
       throw result.message;
@@ -186,17 +191,28 @@ class AuthenticationRepository extends GetxController {
 
   /// [LogoutUser] - Valid for any authentication.
   Future<void> logout() async {
+    String errorMessage = '';
+
+    // Attempt to sign out from Google.
     try {
       await GoogleSignIn().signOut();
-      await FacebookAuth.instance.logOut();
-      await FirebaseAuth.instance.signOut();
-      Get.offAll(() => const WelcomeScreen());
-    } on FirebaseAuthException catch (e) {
-      throw e.message!;
-    } on FormatException catch (e) {
-      throw e.message;
     } catch (e) {
-      throw 'Unable to logout. Try again.';
+      errorMessage += 'Google sign out failed; ';
+    }
+
+    // Attempt to sign out from Firebase.
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      errorMessage += 'Firebase sign out failed; ';
+    }
+
+    if (errorMessage.isNotEmpty) {
+      throw Exception(errorMessage);
+    } else {
+      // Navigate to the Welcome Screen only if all sign out operations succeeded.
+      Get.offAll(() => const WelcomeScreen());
     }
   }
+
 }
