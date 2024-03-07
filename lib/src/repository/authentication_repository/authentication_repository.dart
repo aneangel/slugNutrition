@@ -69,6 +69,9 @@ class AuthenticationRepository extends GetxController {
   Future<void> registerWithEmailAndPassword(String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      await sendEmailVerification();
+      // Navigate to the MailVerification screen
+      Get.offAll(() => const MailVerification());
     } on FirebaseAuthException catch (e) {
       final ex = TExceptions.fromCode(e.code);
       throw ex.message;
