@@ -9,92 +9,13 @@ import '/src/features/authentication/screens/on_boarding/on_boarding_screen.dart
 import '../../../../utils/animations/fade_in_animation/animation_design.dart';
 import '../../../../utils/animations/fade_in_animation/fade_in_animation_controller.dart';
 import '../../../../utils/animations/fade_in_animation/fade_in_animation_model.dart';
+import '/src/features/authentication/screens/mail_verification/mail_verification.dart';
+import '/src/repository/authentication_repository/authentication_repository.dart';
+import '/src/features/core/screens/dashboard/dashboard.dart';
 
-
-// class SplashScreen extends StatelessWidget {
-//   const SplashScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final controller = Get.put(FadeInAnimationController());
-//     controller.startSplashAnimation();
-//
-//     return SafeArea(
-//       child: Scaffold(
-//         body: Stack(
-//           children: [
-//           TFadeInAnimation(
-//           durationInMs: 1600,
-//           animate: TAnimatePosition(
-//             topAfter: 0,
-//             topBefore: -30,
-//             leftBefore: -30,
-//             leftAfter: 15,
-//           ),
-//           child: SizedBox(
-//             width: 200.0, // Specify the width you want
-//             height: 200.0, // And the height you want
-//             child: Image(
-//               image: AssetImage(tSplashTopIcon),
-//             ),
-//           ),
-//         ),
-//         TFadeInAnimation(
-//           durationInMs: 1600,
-//           animate: TAnimatePosition(
-//             topBefore: 135,
-//             topAfter: 135,
-//             leftAfter: tDefaultSpace,
-//             leftBefore: -80,
-//           ),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 tAppTagLine,
-//                 style: Theme
-//                     .of(context)
-//                     .textTheme
-//                     .displayMedium,
-//               )
-//             ],
-//           ),
-//         ),
-//         TFadeInAnimation(
-//           durationInMs: 1600,
-//           animate: TAnimatePosition(bottomBefore: 140, bottomAfter: 140),
-//           child: FractionallySizedBox(
-//           widthFactor: 0.8, // Takes 80% of the parent's width.
-//           child: Image(
-//             image: AssetImage(tSplashImage),
-//             fit: BoxFit.contain, // Or BoxFit.cover depending on your need.
-//           ),
-//         ),
-//       ),
-//       TFadeInAnimation(
-//         durationInMs: 1600,
-//         animate: TAnimatePosition(
-//             bottomBefore: 40,
-//             bottomAfter: 40,
-//             rightBefore: tDefaultSize,
-//             rightAfter: tDefaultSize),
-//         child: Container(
-//           width: tSplashContainerSize,
-//           height: tSplashContainerSize,
-//           decoration: BoxDecoration(
-//               borderRadius: BorderRadius.circular(100),
-//               color: tPrimaryColor),
-//         ),
-//       ),
-//       ],
-//     ),)
-//     ,
-//     );
-//   }
-// }
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -105,8 +26,50 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    super.initState();
     startAnimation();
   }
+
+  Future startAnimation() async {
+    await Future.delayed(Duration(milliseconds: 500));
+    if (!mounted) return; // Check here as well, since setState should not be called if the widget is unmounted
+    setState(() {
+      animate = true;
+    });
+    await Future.delayed(Duration(milliseconds: 2500)); // Adjust the timing based on your preference
+
+    if (!mounted) return; // Ensure the widget is still mounted before proceeding
+    // Check user authentication status and navigate accordingly
+    checkAuthenticationStatus();
+  }
+
+
+  void checkAuthenticationStatus() async {
+    final authRepo = AuthenticationRepository.instance; // Ensure AuthenticationRepository is initialized in your app
+    final isLoggedIn = authRepo.firebaseUser != null;
+    final isEmailVerified = authRepo.firebaseUser?.emailVerified ?? false;
+
+    if (!isLoggedIn) {
+      // User not logged in, go to OnBoardingScreen or WelcomeScreen
+      navigateTo(const OnBoardingScreen());
+    } else if (isLoggedIn && !isEmailVerified) {
+      // User logged in but email not verified, go to MailVerification
+      navigateTo(const MailVerification());
+    } else {
+      // User logged in and email verified, go to Dashboard
+      navigateTo(const Dashboard());
+    }
+  }
+
+  void navigateTo(Widget page) {
+    if (mounted) {
+      print("Navigating to ${page.runtimeType}");
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => page));
+    } else {
+      print("Widget is unmounted, not navigating");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -175,17 +138,5 @@ class _SplashScreenState extends State<SplashScreen> {
             )
           ],
         ));
-  }
-
-  Future startAnimation() async {
-    await Future.delayed(Duration(milliseconds: 500));
-    setState(() {
-      animate = true;
-    });
-    await Future.delayed(Duration(milliseconds: 5000));
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => OnBoardingScreen()),
-    );
   }
 }

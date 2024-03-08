@@ -31,7 +31,7 @@ class LoginController extends GetxController {
       }
       final auth = AuthenticationRepository.instance;
       await auth.loginWithEmailAndPassword(email.text.trim(), password.text.trim());
-      auth.setInitialScreen(auth.firebaseUser);
+      auth.setInitialScreen();
     } catch (e) {
       isLoading.value = false;
       Helper.errorSnackBar(title: tOhSnap, message: e.toString());
@@ -55,7 +55,7 @@ class LoginController extends GetxController {
         await UserRepository.instance.createUser(user);
       }
       isGoogleLoading.value = false;
-      auth.setInitialScreen(auth.firebaseUser);
+      auth.setInitialScreen();
     } catch (e) {
       isGoogleLoading.value = false;
       Helper.errorSnackBar(title: tOhSnap, message: e.toString());

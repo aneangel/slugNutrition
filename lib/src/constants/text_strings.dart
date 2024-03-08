@@ -120,8 +120,8 @@ const String tDashboardBannerTitle1 = "Android for Beginners";
 const String tProfile = "Profile";
 const String tEditProfile = "Edit Profile";
 const String tLogoutDialogHeading = "Logout";
-const String tProfileHeading = "Coding with T";
-const String tProfileSubHeading = "superAdmin@codingwitht.com";
+const String tProfileHeading = "Coding with T"; // username stored in the firebase
+const String tProfileSubHeading = "superAdmin@codingwitht.com"; // email stored in the firebase
 // -- Menu
 const String tMenu5 = tLogout;
 const String tMenu1 = "Settings";
