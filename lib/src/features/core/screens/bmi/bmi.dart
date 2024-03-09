@@ -85,32 +85,24 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
           var storageRef = FirebaseStorage.instance.ref().child('profileImages/${user.uid}.jpg');
           var uploadTask = await storageRef.putFile(profileImage);
           imageUrl = await uploadTask.ref.getDownloadURL();
-
-          final bmiModel = BMIModel(
-            height: _heightInCm,
-            weight: _weightInKg,
-            bmi: _bmi,
-            activityLevel: _selectedActivityLevel,
-            gender: _selectedGenderIndex == 0 ? 'Male' : (_selectedGenderIndex == 1 ? 'Female' : 'Others'),
-            name: _nameController.text,
-            age: int.parse(_ageController.text),
-            profileImageUrl: imageUrl, // Include the profile image URL
-          );
+          print("Image URL: $imageUrl"); // Log the image URL
         }
 
-        // Assuming BMIModel has a method to convert it to Map, excluding imageUrl
         Map<String, dynamic> bmiData = bmiModel.toJson();
-        // Add imageUrl and name to the data map
+        // Include the profile image URL in the data
         bmiData['profileImageUrl'] = imageUrl;
-        bmiData['name'] = _nameController.text;
 
         DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.email);
         await userDoc.collection('forms').doc('bmiForm').set(bmiData);
+        print("BMI Data saved successfully"); // Confirm data was saved
       } catch (e) {
-        print("Error saving BMI data: $e");
+        print("Error saving BMI data: $e"); // Log any errors
       }
+    } else {
+      print("User not logged in or email is null"); // User authentication check
     }
   }
+
 
   void calculateBMI() {
     print("calculateBMI called");
