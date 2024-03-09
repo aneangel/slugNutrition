@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import '../../models/profile/bmi_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BMICalculatorScreen extends StatefulWidget {
   @override
@@ -65,6 +68,24 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
     }
   }
 
+  Future<void> saveBMIInfo(BMIModel bmiModel) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.email != null) {
+      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.email);
+
+      try {
+        // Convert BMIModel to Map<String, dynamic> before sending to Firestore
+        Map<String, dynamic> bmiData = bmiModel.toJson();
+
+        await userDoc.collection('forms').doc('bmiForm').set(bmiData);
+        // Success handling
+      } catch (e) {
+        // Error handling
+        print("Error saving BMI data: $e");
+      }
+    }
+  }
+
   void calculateBMI() {
     print("calculateBMI called");
     double heightInCm = 0;
@@ -102,6 +123,21 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
     } else {
       // Handle error: invalid height or weight input
       print("Invalid input for height or weight");
+    }
+    if (heightInCm > 0 && weightInKg > 0) {
+      final bmiModel = BMIModel(
+        height: heightInCm,
+        weight: weightInKg,
+        bmi: _bmi,
+        activityLevel: _selectedActivityLevel,
+        gender: _selectedGenderIndex == 0 ? 'Male' : (_selectedGenderIndex == 1 ? 'Female' : 'Others'),
+        name: _nameController.text,
+        age: int.parse(_ageController.text),
+        // profileImageUrl: '', // Add this after you handle image upload
+      );
+
+      // Call a function to save this BMIModel instance to Firestore
+      saveBMIInfo(bmiModel);
     }
   }
 
