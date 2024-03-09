@@ -15,6 +15,7 @@ import '/src/features/authentication/screens/on_boarding/on_boarding_screen.dart
 import 'firebase_options.dart';
 import '/src/repository/authentication_repository/authentication_repository.dart';
 import '/src/repository/user_repository/user_repository.dart';
+import '/src/features/core/controllers/profile_controller.dart';
 import '/src/features/authentication/screens/signup/signup_screen.dart';
 import '/src/features/authentication/controllers/signup_controller.dart';
 
@@ -47,31 +48,25 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Get.put(AuthenticationRepository());
-  Get.put(UserRepository());
-  Get.put(SignUpController());
+
   runApp(const App());
 }
 
-// The App class is a StatelessWidget, which means its properties (or configuration) cannot change.
-// All StatelessWidget must override the build method.
 class App extends StatelessWidget {
-  // The constructor for App. It allows an optional Key to be passed in for use by the framework.
-  // The "const" keyword before the constructor enables this widget to be created as a compile-time constant.
   const App({Key? key}) : super(key: key);
 
   @override
-  // The build method describes the part of the user interface this widget represents.
-  // The context parameter represents the location of this widget in the widget tree.
   Widget build(BuildContext context) {
-    // MaterialApp is a predefined class in Flutter that wraps several widgets that are commonly required for material design applications.
-    // It's being created with a "const" constructor here for performance optimization.
     return GetMaterialApp(
-      // home is one of the properties of MaterialApp. It defines the default route of the app (i.e., the starting point).
-      // AppHome is a custom widget that would represent the main screen of the app.
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       themeMode: ThemeMode.system,
+      initialBinding: BindingsBuilder(() {
+        Get.put(AuthenticationRepository());
+        Get.put(UserRepository());
+        Get.put(SignUpController());
+        Get.lazyPut(() => ProfileController());
+      }),
       home: OnBoardingScreen(),
     );
   }

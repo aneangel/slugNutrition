@@ -13,6 +13,28 @@ class ProfileController extends GetxController {
   final _authRepo = AuthenticationRepository.instance;
   final _userRepo = UserRepository.instance;
 
+  final Rx<UserModel> _currentUser = UserModel.empty().obs;
+
+  UserModel get currentUser => _currentUser.value;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchCurrentUser();
+  }
+
+  void fetchCurrentUser() async {
+    try {
+      final userEmail = _authRepo.getUserEmail;
+      if (userEmail.isNotEmpty) {
+        UserModel user = await _userRepo.getUserDetails(userEmail);
+        _currentUser.value = user;
+      }
+    } catch (e) {
+      print("Error fetching current user: $e");
+    }
+  }
+
   /// Get User Email and pass to UserRepository to fetch user record.
   getUserData() async {
     try {

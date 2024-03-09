@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:slugnutrition/src/features/core/screens/bmi/bmi.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '/src/common_widgets/buttons/primary_button.dart';
 import '/src/constants/sizes.dart';
 import '/src/constants/text_strings.dart';
@@ -12,20 +13,18 @@ import '/src/features/core/screens/profile/all_users.dart';
 import '/src/features/core/screens/profile/dietary_preferences/dietary_preferences_form.dart';
 import '../../../../repository/authentication_repository/authentication_repository.dart';
 import '/src/features/core/screens/update_password/updatepassword.dart';
-import '/src/features/core/screens/bmi/bmi.dart';
 import '/src/features/core/screens/faq/faq.dart';
+import '/src/features/core/controllers/profile_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: () => Get.back(), icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text(tProfile, style: Theme.of(context).textTheme.headlineMedium),
-        actions: [IconButton(onPressed: () {}, icon: Icon(isDark ? LineAwesomeIcons.sun : LineAwesomeIcons.moon))],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -36,9 +35,17 @@ class ProfileScreen extends StatelessWidget {
               const ImageWithIcon(),
               const SizedBox(height: 10),
               Text(tProfileHeading, style: Theme.of(context).textTheme.headlineMedium),
-              Text(tProfileSubHeading, style: Theme.of(context).textTheme.bodyMedium),
+              const SizedBox(height: 5),
+              Text(FirebaseAuth.instance.currentUser?.email ?? "No email available", style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 20),
 
+              TPrimaryButton(
+                  isFullWidth: false,
+                  width: 200,
+                  text: tEditProfile,
+                  onPressed: () => Get.to(() => UpdateProfileScreen())
+              ),
+              const SizedBox(height: 30),
               const Divider(),
               const SizedBox(height: 10),
 
