@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:slugnutrition/src/features/authentication/screens/on_boarding/on_boarding_screen.dart';
 import 'package:slugnutrition/src/features/core/screens/bmi/bmi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '/src/common_widgets/buttons/primary_button.dart';
 import '/src/constants/sizes.dart';
 import '/src/constants/text_strings.dart';
 import '/src/features/core/screens/profile/update_profile_screen.dart';
+import '/src/features/core/screens/profile/update_dietary_preferences.dart';
 import '/src/features/core/screens/profile/update_bmi.dart';
 import '/src/features/core/screens/profile/widgets/image_with_icon.dart';
 import '/src/features/core/screens/profile/widgets/profile_menu.dart';
@@ -120,10 +122,17 @@ class ProfileScreen extends StatelessWidget {
               ProfileMenuWidget(title: "Update Password", icon: LineAwesomeIcons.key, onPress: () => Get.to(() => UpdatePasswordScreen())),
               ProfileMenuWidget(title: "Update BMI", icon: LineAwesomeIcons.address_card, onPress: () => Get.to(() => UpdateBMIScreen())),
               ProfileMenuWidget(
-                  title: "Update Dietary Preferences", icon: LineAwesomeIcons.utensils, onPress: () => Get.to(() => DietaryPreferencesForm())),
+                  title: "Update Dietary Preferences", icon: LineAwesomeIcons.utensils, onPress: () => Get.to(() => UpdateDietaryPreferencesForm())),
               const Divider(),
               const SizedBox(height: 10),
               ProfileMenuWidget(title: "FAQs", icon: LineAwesomeIcons.question_circle, onPress: () => Get.to(() => FAQScreen())),
+              ProfileMenuWidget(
+                title: "Delete Account",
+                icon: LineAwesomeIcons.trash, // Choose an appropriate icon
+                textColor: Colors.red,
+                endIcon: false,
+                onPress: () => _showDeleteUserModal(context),
+              ),
               ProfileMenuWidget(
                 title: "Logout",
                 icon: LineAwesomeIcons.alternate_sign_out,
@@ -131,12 +140,74 @@ class ProfileScreen extends StatelessWidget {
                 endIcon: false,
                 onPress: () => _showLogoutModal(),
               ),
+
             ],
           ),
         ),
       ),
     );
   }
+
+  _showDeleteUserModal(BuildContext context) {
+    Get.defaultDialog(
+      title: "Delete Account",
+      content: Text("This will permanently delete your account and all associated data. Are you sure you want to proceed?"),
+      onCancel: () => Get.back(),
+      onConfirm: () {
+        Get.back(); // Close the dialog
+        _promptForReauthentication(context); // Prompt for re-authentication
+      },
+      textCancel: "Cancel",
+      textConfirm: "Delete",
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.red, // Check if this named parameter exists in your version or adjust accordingly
+    );
+  }
+  _promptForReauthentication(BuildContext context) {
+    TextEditingController passwordController = TextEditingController();
+
+    // Show dialog to enter password
+    Get.defaultDialog(
+      title: "Re-authenticate",
+      content: Column(
+        children: [
+          Text("Please enter your password to confirm."),
+          TextField(
+            controller: passwordController,
+            obscureText: true,
+            decoration: InputDecoration(labelText: "Password"),
+          ),
+        ],
+      ),
+      onCancel: () => Get.back(),
+      onConfirm: () async {
+        Get.back(); // Close the dialog
+        try {
+          String email = FirebaseAuth.instance.currentUser!.email!;
+          AuthCredential credential = EmailAuthProvider.credential(email: email, password: passwordController.text);
+          await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(credential);
+          // Re-authentication successful, proceed with account deletion
+          await _deleteUserAccount();
+        } catch (error) {
+          Get.snackbar("Error", "Re-authentication failed. Please try again.");
+        }
+      },
+      textCancel: "Cancel",
+      textConfirm: "Confirm",
+      confirmTextColor: Colors.white,
+    );
+  }
+
+  Future<void> _deleteUserAccount() async {
+    try {
+      await FirebaseAuth.instance.currentUser!.delete();
+      // Handle post-deletion logic, e.g., navigate to login screen
+      Get.offAll(() => OnBoardingScreen()); // Assuming you have a LoginScreen
+    } catch (error) {
+      Get.snackbar("Error", "Failed to delete account. Please try again.");
+    }
+  }
+
 
   _showLogoutModal() {
     Get.defaultDialog(

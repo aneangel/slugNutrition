@@ -5,6 +5,8 @@ import '/src/constants/sizes.dart';
 import '/src/constants/text_strings.dart';
 import '/src/features/core/screens/dashboard/widgets/appbar.dart';
 import '/src/features/core/screens/dashboard/widgets/diningHallGrid.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '/src/features/core/screens/dashboard/widgets/banners.dart';
 import '/src/features/core/screens/dashboard/widgets/categories.dart';
 import '/src/features/core/screens/dashboard/widgets/search.dart';
@@ -22,6 +24,33 @@ class Dashboard extends StatelessWidget {
     } else {
       return 'Good Evening';
     }
+  }
+
+  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+
+  Future<String> getUserName() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    String userName = "user"; // Default fallback name
+    if (user != null) {
+      try {
+        DocumentSnapshot bmiForm = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.email)
+            .collection('forms')
+            .doc('bmiForm')
+            .get();
+
+        if (bmiForm.exists) {
+          Map<String, dynamic>? data = bmiForm.data() as Map<String, dynamic>?;
+          if (data != null && data.containsKey('name')) {
+            userName = capitalize(data['name']);
+          }
+        }
+      } catch (e) {
+        print("Error fetching user name: $e");
+      }
+    }
+    return userName;
   }
 
   @override
@@ -67,12 +96,28 @@ class Dashboard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Text(tDashboardTitle, style: txtTheme.bodyMedium),
-              Text('${getGreeting()}, User!',
-                  style: TextStyle(
-                    fontSize: 16.0, // Example font size, adjust as needed
-                    fontWeight: FontWeight.normal, // Ensures text is not bold
-                    color: Colors.black, // Example text color, adjust as needed
-                  )),
+              Text.rich(
+                TextSpan(
+                  children: <InlineSpan>[
+                    WidgetSpan(
+                      child: FutureBuilder<String>(
+                        future: getUserName(),
+                        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                          String displayName = snapshot.hasData ? snapshot.data! : "User";
+                          return Text(
+                            '${getGreeting()}, $displayName!',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Text(tDashboardHeading, style: txtTheme.displayMedium),
               const SizedBox(height: tDashboardPadding),
 
