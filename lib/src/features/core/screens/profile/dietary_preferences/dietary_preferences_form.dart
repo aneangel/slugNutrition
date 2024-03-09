@@ -6,6 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:slugnutrition/src/constants/sizes.dart';
+import 'package:get/get.dart';
+import 'package:slugnutrition/src/features/core/screens/bmi/bmi.dart';
+import '/src/features/core/screens/dashboard/dashboard.dart';
 import '../../../models/profile/dietary_preferences_model.dart';
 
 
@@ -99,6 +102,14 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dietary Preferences'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+          // Navigate back to BMICalculatorScreen
+          // Make sure to handle any necessary data transfer
+            Get.to(() => BMICalculatorScreen());
+          },
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -603,7 +614,10 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
                   content: Text('Your preferences have been successfully saved.'),
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.of(context).pop(), // Close the dialog
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the dialog
+                        Get.offAll(() => Dashboard()); // Navigate to the Dashboard
+                      }, // Close the dialog
                       child: Text('OK'),
                     ),
                   ],

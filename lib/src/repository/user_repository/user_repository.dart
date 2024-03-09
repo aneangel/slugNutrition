@@ -25,7 +25,34 @@ class UserRepository extends GetxController {
       throw e.toString().isEmpty ? 'Something went wrong. Please Try Again' : e.toString();
     }
   }
+  Future<bool> hasBmiData(String userId) async {
+    try {
+      var doc = await _db.collection("Users").doc(userId).get();
+      if (!doc.exists) {
+        throw "User not found.";
+      }
+      // Assuming the BMI data is stored under a field named 'bmi'
+      return doc.data()!.containsKey('bmi') && doc.data()!['bmi'] != null;
+    } catch (e) {
+      print(e); // Handle the error or log it
+      return false; // Assuming no data exists if there's an error
+    }
+  }
 
+  /// Check if user's dietary preferences exist
+  Future<bool> hasDietaryPreferences(String userId) async {
+    try {
+      var doc = await _db.collection("Users").doc(userId).get();
+      if (!doc.exists) {
+        throw "User not found.";
+      }
+      // Assuming the dietary preferences are stored under a field named 'dietaryPreferences'
+      return doc.data()!.containsKey('dietaryPreferences') && doc.data()!['dietaryPreferences'] != null;
+    } catch (e) {
+      print(e); // Handle the error or log it
+      return false; // Assuming no data exists if there's an error
+    }
+  }
   /// Fetch User Specific details
   Future<UserModel> getUserDetails(String email) async {
     try {

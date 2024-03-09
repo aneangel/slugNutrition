@@ -13,11 +13,38 @@ import '/src/features/core/screens/profile/all_users.dart';
 import '/src/features/core/screens/profile/dietary_preferences/dietary_preferences_form.dart';
 import '../../../../repository/authentication_repository/authentication_repository.dart';
 import '/src/features/core/screens/update_password/updatepassword.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '/src/features/core/screens/faq/faq.dart';
 import '/src/features/core/controllers/profile_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
+
+
+  Future<String> getUserName() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  String userName = "No Name Available"; // Default value
+  if (user != null) {
+  try {
+  DocumentSnapshot bmiForm = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.email)
+      .collection('forms')
+      .doc('bmiForm')
+      .get();
+
+  if (bmiForm.exists) {
+  Map<String, dynamic>? data = bmiForm.data() as Map<String, dynamic>?;
+  if (data != null && data.containsKey('name')) {
+  userName = data['name'];
+  }
+  }
+  } catch (e) {
+  print("Error fetching user name: $e");
+  }
+  }
+  return userName;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +61,17 @@ class ProfileScreen extends StatelessWidget {
               /// -- IMAGE with ICON
               const ImageWithIcon(),
               const SizedBox(height: 10),
-              Text(tProfileHeading, style: Theme.of(context).textTheme.headlineMedium),
+              FutureBuilder<String>(
+                future: getUserName(),
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Text(snapshot.data ?? "No Name Available", style: Theme.of(context).textTheme.headlineMedium);
+                  } else {
+                    // While waiting for the async operation to complete, show a loading indicator.
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
               const SizedBox(height: 5),
               Text(FirebaseAuth.instance.currentUser?.email ?? "No email available", style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 20),

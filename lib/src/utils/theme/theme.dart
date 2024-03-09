@@ -18,11 +18,11 @@ class TAppTheme {
   );
 
   static ThemeData darkTheme = ThemeData(
-    brightness: Brightness.dark,
-    textTheme: TTextTheme.darkTextTheme,
-    appBarTheme: TAppBarTheme.darkAppBarTheme,
-    elevatedButtonTheme: TElevatedButtonTheme.darkElevatedButtonTheme,
-    outlinedButtonTheme: TOutlinedButtonTheme.darkOutlinedButtonTheme,
-    inputDecorationTheme: TTextFormFieldTheme.darkInputDecorationTheme,
+    brightness: Brightness.light,
+    textTheme: TTextTheme.lightTextTheme,
+    appBarTheme: TAppBarTheme.lightAppBarTheme,
+    elevatedButtonTheme: TElevatedButtonTheme.lightElevatedButtonTheme,
+    outlinedButtonTheme: TOutlinedButtonTheme.lightOutlinedButtonTheme,
+    inputDecorationTheme: TTextFormFieldTheme.lightInputDecorationTheme,
   );
 }

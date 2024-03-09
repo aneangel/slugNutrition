@@ -4,6 +4,10 @@ import 'package:image_picker/image_picker.dart';
 import '../../models/profile/bmi_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '/src/features/core/screens/profile/dietary_preferences/dietary_preferences_form.dart';
+import '/src/features/core/controllers/bmi_controller.dart';
+import '/src/features/core/models/bmi/bmi_model.dart';
+import 'package:get/get.dart';
 
 class BMICalculatorScreen extends StatefulWidget {
   @override
@@ -137,7 +141,20 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
       );
 
       // Call a function to save this BMIModel instance to Firestore
-      saveBMIInfo(bmiModel);
+      saveBMIInfo(bmiModel).then((_) {
+        // Navigate to DietaryPreferencesForm upon successful saving
+        // If using named routes:
+        // Get.toNamed('/dietaryPreferencesForm');
+
+        // If not using named routes:
+        Get.to(() => DietaryPreferencesForm()); // Make sure you have imported DietaryPreferencesForm
+      }).catchError((error) {
+        // Handle errors if saving fails
+        print("Error saving BMI data: $error");
+      });
+    } else {
+      // Handle error: invalid height or weight input
+      print("Invalid input for height or weight");
     }
   }
 
@@ -188,6 +205,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bmiController = Get.find<BmiController>();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -529,7 +547,14 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         // Your validation logic or function call
+                        BmiData bmiData = BmiData(
+                          height: double.parse(_heightController.text),
+                          weight: double.parse(_weightController.text),
+                          // Include other fields as necessary
+                        );
+                        bmiController.updateBmiData(bmiData);
                         calculateBMI();
+                        Get.to(() => DietaryPreferencesForm());
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -545,14 +570,6 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                   ),
                 ),
               ),
-
-              if (_bmi > 0)
-                Text(
-                  'Your BMI is ${_bmi.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    color: Colors.black, // Set the text color to black
-                  ),
-                ),
             ],
           ),
         ),

@@ -18,6 +18,7 @@ import '/src/repository/user_repository/user_repository.dart';
 import '/src/features/core/controllers/profile_controller.dart';
 import '/src/features/authentication/screens/signup/signup_screen.dart';
 import '/src/features/authentication/controllers/signup_controller.dart';
+import '/src/features/core/controllers/bmi_controller.dart';
 
 // import 'app.dart';
 
@@ -65,7 +66,8 @@ class App extends StatelessWidget {
         Get.put(AuthenticationRepository());
         Get.put(UserRepository());
         Get.put(SignUpController());
-        Get.lazyPut(() => ProfileController());
+        Get.put(ProfileController());
+        Get.put(BmiController());
       }),
       home: OnBoardingScreen(),
     );

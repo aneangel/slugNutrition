@@ -8,6 +8,11 @@ import '/src/features/core/screens/dashboard/dashboard.dart';
 import 'exceptions/t_exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/src/features/authentication/screens/on_boarding/on_boarding_screen.dart';
+import '/src/repository/user_repository/user_repository.dart';
+import '/src/features/core/screens/profile/dietary_preferences/dietary_preferences_form.dart';
+import 'package:slugnutrition/src/features/core/screens/bmi/bmi.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 // /// -- README(Docs[6]) -- Bindings
 class AuthenticationRepository extends GetxController {
@@ -36,16 +41,62 @@ class AuthenticationRepository extends GetxController {
 
   /// Setting initial screen
   /// Setting initial screen with onboarding check
+  // Future<void> setInitialScreen() async {
+  //   User? user = _auth.currentUser;
+  //   if (user != null) {
+  //     // User is logged in, navigate to Dashboard
+  //     Get.offAll(() => const Dashboard());
+  //   } else {
+  //     // No user is logged in, navigate to Welcome Screen
+  //     Get.offAll(() => const OnBoardingScreen());
+  //   }
+  // }
   Future<void> setInitialScreen() async {
-    User? user = _auth.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // User is logged in, navigate to Dashboard
-      Get.offAll(() => const Dashboard());
+      // Check if the user has a BMI form
+      bool hasBmiData = await checkForFormData(user.email!, 'bmiForm');
+      if (!hasBmiData) {
+        // User needs to fill out BMI form
+        Get.offAll(() => BMICalculatorScreen());
+        return;
+      }
+
+      // Check if the user has a dietary preferences form
+      bool hasDietaryData = await checkForFormData(user.email!, 'dietaryPreferencesForm');
+      if (!hasDietaryData) {
+        // User needs to fill out dietary preferences form
+        Get.offAll(() => DietaryPreferencesForm());
+        return;
+      }
+
+      // If the user has both forms, navigate to Dashboard
+      Get.offAll(() => Dashboard());
     } else {
       // No user is logged in, navigate to Welcome Screen
-      Get.offAll(() => const WelcomeScreen());
+      Get.offAll(() => OnBoardingScreen());
     }
   }
+
+  Future<bool> checkForFormData(String userEmail, String formName) async {
+    try {
+      // Attempt to get the form document
+      DocumentSnapshot formDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userEmail)
+          .collection('forms')
+          .doc(formName)
+          .get();
+      // The form exists if the document snapshot exists
+      return formDoc.exists;
+    } catch (e) {
+      // If there's an error accessing Firestore, handle it here
+      print("Error checking for form data: $e");
+      return false;
+    }
+  }
+
+
 
 
 
@@ -214,7 +265,7 @@ class AuthenticationRepository extends GetxController {
       throw Exception(errorMessage);
     } else {
       // Navigate to the Welcome Screen only if all sign out operations succeeded.
-      Get.offAll(() => const WelcomeScreen());
+      Get.offAll(() => const OnBoardingScreen());
     }
   }
 

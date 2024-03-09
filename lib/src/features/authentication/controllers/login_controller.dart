@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '/src/features/authentication/models/user_model.dart';
 import '/src/repository/user_repository/user_repository.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../constants/text_strings.dart';
 import '../../../repository/authentication_repository/authentication_repository.dart';
 import '../../../utils/helper/helper_controller.dart';
@@ -58,7 +58,12 @@ class LoginController extends GetxController {
       auth.setInitialScreen();
     } catch (e) {
       isGoogleLoading.value = false;
-      Helper.errorSnackBar(title: tOhSnap, message: e.toString());
+      if (e is FirebaseAuthException) {
+        Helper.errorSnackBar(title: tOhSnap, message: e.message ?? "Unknown FirebaseAuth error");
+      } else {
+        Helper.errorSnackBar(title: tOhSnap, message: e.toString());
+      }
+      print('Exception during Google sign-in: $e');
     }
   }
 
