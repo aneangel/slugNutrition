@@ -7,6 +7,7 @@ import '/src/common_widgets/buttons/primary_button.dart';
 import '/src/constants/sizes.dart';
 import '/src/constants/text_strings.dart';
 import '/src/features/core/screens/profile/update_profile_screen.dart';
+import '/src/features/core/screens/profile/update_bmi.dart';
 import '/src/features/core/screens/profile/widgets/image_with_icon.dart';
 import '/src/features/core/screens/profile/widgets/profile_menu.dart';
 import '/src/features/core/screens/profile/all_users.dart';
@@ -117,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
 
               /// -- MENU
               ProfileMenuWidget(title: "Update Password", icon: LineAwesomeIcons.key, onPress: () => Get.to(() => UpdatePasswordScreen())),
-              ProfileMenuWidget(title: "Update BMI", icon: LineAwesomeIcons.address_card, onPress: () => Get.to(() => BMICalculatorScreen())),
+              ProfileMenuWidget(title: "Update BMI", icon: LineAwesomeIcons.address_card, onPress: () => Get.to(() => UpdateBMIScreen())),
               ProfileMenuWidget(
                   title: "Update Dietary Preferences", icon: LineAwesomeIcons.utensils, onPress: () => Get.to(() => DietaryPreferencesForm())),
               const Divider(),

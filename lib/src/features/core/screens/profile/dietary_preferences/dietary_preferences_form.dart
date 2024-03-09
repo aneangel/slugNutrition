@@ -107,7 +107,7 @@ class _DietaryPreferencesFormState extends State<DietaryPreferencesForm> {
           onPressed: () {
           // Navigate back to BMICalculatorScreen
           // Make sure to handle any necessary data transfer
-            Get.to(() => BMICalculatorScreen());
+            Get.off(() => BMICalculatorScreen());
           },
         ),
       ),
