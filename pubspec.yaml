@@ -20,6 +20,7 @@ dependencies:
   flutter_svg: ^2.0.9
   image_picker: ^1.0.7
   editable_image: ^2.0.0
+  firebase_storage: ^11.6.0
 
   ## -- STATE MANAGEMENT
   get: ^4.6.6

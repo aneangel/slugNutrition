@@ -20,6 +20,25 @@ import '/src/features/core/controllers/profile_controller.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
+  Future<String?> getUserProfileImageUrl() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.email)
+            .get();
+        Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
+        return userData?['profileImageUrl']; // Adjust the field name if necessary
+      } catch (e) {
+        print("Error fetching user profile image URL: $e");
+        return null;
+      }
+    }
+    return null;
+  }
+
+
 
   Future<String> getUserName() async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -59,7 +78,17 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             children: [
               /// -- IMAGE with ICON
-              const ImageWithIcon(),
+              FutureBuilder<String?>(
+                future: getUserProfileImageUrl(),
+                builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  return ImageWithIcon(
+                    imageUrl: snapshot.data,
+                    onImageUpdate: () {
+                      // Handle profile image update
+                    },
+                  );
+                },
+              ),
               const SizedBox(height: 10),
               FutureBuilder<String>(
                 future: getUserName(),

@@ -8,6 +8,7 @@ import '/src/features/core/screens/profile/dietary_preferences/dietary_preferenc
 import '/src/features/core/controllers/bmi_controller.dart';
 import '/src/features/core/models/bmi/bmi_model.dart';
 import 'package:get/get.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class BMICalculatorScreen extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   double _bmi = 0;
+  double _heightInCm = 0;
+  double _weightInKg = 0;
   String _heightUnit = 'cm'; // Default unit
   String _weightUnit = 'kg'; // Default unit
   String _selectedUnit = 'cm';
@@ -72,19 +75,38 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
     }
   }
 
-  Future<void> saveBMIInfo(BMIModel bmiModel) async {
+  Future<void> saveBMIInfo(BMIModel bmiModel, File? profileImage) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null && user.email != null) {
-      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.email);
-
       try {
-        // Convert BMIModel to Map<String, dynamic> before sending to Firestore
-        Map<String, dynamic> bmiData = bmiModel.toJson();
+        String imageUrl = '';
+        // If there's a profile image selected, upload it
+        if (profileImage != null) {
+          var storageRef = FirebaseStorage.instance.ref().child('profileImages/${user.uid}.jpg');
+          var uploadTask = await storageRef.putFile(profileImage);
+          imageUrl = await uploadTask.ref.getDownloadURL();
 
+          final bmiModel = BMIModel(
+            height: _heightInCm,
+            weight: _weightInKg,
+            bmi: _bmi,
+            activityLevel: _selectedActivityLevel,
+            gender: _selectedGenderIndex == 0 ? 'Male' : (_selectedGenderIndex == 1 ? 'Female' : 'Others'),
+            name: _nameController.text,
+            age: int.parse(_ageController.text),
+            profileImageUrl: imageUrl, // Include the profile image URL
+          );
+        }
+
+        // Assuming BMIModel has a method to convert it to Map, excluding imageUrl
+        Map<String, dynamic> bmiData = bmiModel.toJson();
+        // Add imageUrl and name to the data map
+        bmiData['profileImageUrl'] = imageUrl;
+        bmiData['name'] = _nameController.text;
+
+        DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.email);
         await userDoc.collection('forms').doc('bmiForm').set(bmiData);
-        // Success handling
       } catch (e) {
-        // Error handling
         print("Error saving BMI data: $e");
       }
     }
@@ -92,8 +114,6 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
 
   void calculateBMI() {
     print("calculateBMI called");
-    double heightInCm = 0;
-    double weightInKg = 0;
 
     // Debugging: print the selected units
     print("Selected height unit: $_selectedUnit");
@@ -101,25 +121,25 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
 
     // Assuming you have validation in place and users can switch between units
     if (_selectedUnit == 'cm') {
-      heightInCm = double.tryParse(_heightController.text) ?? 0;
+      _heightInCm = double.tryParse(_heightController.text) ?? 0;
     } else if (_selectedUnit == 'ft') {
-      heightInCm = convertFeetInchesToCm(_heightController.text);
+      _heightInCm = convertFeetInchesToCm(_heightController.text);
     }
 
     if (_selectedWUnit == 'kg') {
-      weightInKg = double.tryParse(_weightController.text) ?? 0;
+      _weightInKg = double.tryParse(_weightController.text) ?? 0;
     } else if (_selectedWUnit == 'lbs') {
-      weightInKg =
+      _weightInKg =
           convertPoundsToKg(double.tryParse(_weightController.text) ?? 0);
     }
 
     // Debugging: print the parsed values
-    print("Parsed height in cm: $heightInCm");
-    print("Parsed weight in kg: $weightInKg");
+    print("Parsed height in cm: $_heightInCm");
+    print("Parsed weight in kg: $_weightInKg");
 
-    if (heightInCm > 0 && weightInKg > 0) {
-      final heightInMeters = heightInCm / 100;
-      final bmi = weightInKg / (heightInMeters * heightInMeters);
+    if (_heightInCm > 0 && _weightInKg > 0) {
+      final heightInMeters = _heightInCm / 100;
+      final bmi = _weightInKg / (heightInMeters * heightInMeters);
       print("Calculated BMI: $bmi");
       setState(() {
         _bmi = bmi;
@@ -128,10 +148,10 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
       // Handle error: invalid height or weight input
       print("Invalid input for height or weight");
     }
-    if (heightInCm > 0 && weightInKg > 0) {
+    if (_heightInCm > 0 && _weightInKg > 0) {
       final bmiModel = BMIModel(
-        height: heightInCm,
-        weight: weightInKg,
+        height: _heightInCm,
+        weight: _weightInKg,
         bmi: _bmi,
         activityLevel: _selectedActivityLevel,
         gender: _selectedGenderIndex == 0 ? 'Male' : (_selectedGenderIndex == 1 ? 'Female' : 'Others'),
@@ -141,7 +161,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
       );
 
       // Call a function to save this BMIModel instance to Firestore
-      saveBMIInfo(bmiModel).then((_) {
+      saveBMIInfo(bmiModel,_profileImage).then((_) {
         // Navigate to DietaryPreferencesForm upon successful saving
         // If using named routes:
         // Get.toNamed('/dietaryPreferencesForm');

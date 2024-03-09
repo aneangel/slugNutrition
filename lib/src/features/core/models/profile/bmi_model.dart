@@ -9,7 +9,7 @@ class BMIModel {
   String gender;
   String name;
   int age;
-  String profileImageUrl; // If you want to store the image URL after uploading it to Firebase Storage
+  String? profileImageUrl; // If you want to store the image URL after uploading it to Firebase Storage
 
   BMIModel({
     required this.height,
@@ -19,7 +19,7 @@ class BMIModel {
     required this.gender,
     required this.name,
     required this.age,
-    this.profileImageUrl = '',
+    this.profileImageUrl,
   });
 
   Map<String, dynamic> toJson() => {
@@ -30,6 +30,6 @@ class BMIModel {
     'gender': gender,
     'name': name,
     'age': age,
-    'profileImageUrl': profileImageUrl,
+    'profileImageUrl': profileImageUrl ?? '',
   };
 }
