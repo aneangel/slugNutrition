@@ -4,6 +4,7 @@ import 'package:slugnutrition/src/features/authentication/controllers/signup_con
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:slugnutrition/src/features/core/screens/bmi/bmi.dart';
 import 'package:slugnutrition/src/features/core/screens/dashboard/dashboard.dart';
+import 'package:slugnutrition/src/features/core/screens/update_password/updatepassword.dart';
 import '/src/utils/theme/theme.dart';
 import 'package:get/get.dart';
 import '/src/features/authentication/screens/splash_screen/splash_screen.dart';

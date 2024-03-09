@@ -11,6 +11,9 @@ import '/src/features/core/screens/profile/widgets/profile_menu.dart';
 import '/src/features/core/screens/profile/all_users.dart';
 import '/src/features/core/screens/profile/dietary_preferences/dietary_preferences_form.dart';
 import '../../../../repository/authentication_repository/authentication_repository.dart';
+import '/src/features/core/screens/update_password/updatepassword.dart';
+import '/src/features/core/screens/bmi/bmi.dart';
+import '/src/features/core/screens/faq/faq.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -36,25 +39,17 @@ class ProfileScreen extends StatelessWidget {
               Text(tProfileSubHeading, style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 20),
 
-              /// -- BUTTON
-              TPrimaryButton(
-                  isFullWidth: false,
-                  width: 200,
-                  text: tEditProfile,
-                  onPressed: () => Get.to(() => UpdateProfileScreen())
-              ),
-              const SizedBox(height: 30),
               const Divider(),
               const SizedBox(height: 10),
 
               /// -- MENU
-              ProfileMenuWidget(title: "Forget/Update Password", icon: LineAwesomeIcons.key, onPress: () {}),
-              ProfileMenuWidget(title: "Update BMI", icon: LineAwesomeIcons.address_card, onPress: () => {}),
+              ProfileMenuWidget(title: "Update Password", icon: LineAwesomeIcons.key, onPress: () => Get.to(() => UpdatePasswordScreen())),
+              ProfileMenuWidget(title: "Update BMI", icon: LineAwesomeIcons.address_card, onPress: () => Get.to(() => BMICalculatorScreen())),
               ProfileMenuWidget(
                   title: "Update Dietary Preferences", icon: LineAwesomeIcons.utensils, onPress: () => Get.to(() => DietaryPreferencesForm())),
               const Divider(),
               const SizedBox(height: 10),
-              ProfileMenuWidget(title: "FAQs", icon: LineAwesomeIcons.question_circle, onPress: () {}),
+              ProfileMenuWidget(title: "FAQs", icon: LineAwesomeIcons.question_circle, onPress: () => Get.to(() => FAQScreen())),
               ProfileMenuWidget(
                 title: "Logout",
                 icon: LineAwesomeIcons.alternate_sign_out,
