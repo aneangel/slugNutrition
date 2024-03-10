@@ -131,14 +131,9 @@ class FirestoreService {
     try {
       DocumentSnapshot snapshot = await _db.collection('Dining Hall Menus').doc(diningHallId).get();
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-      Map<String, dynamic> categories = data['categories'];
-      categories.forEach((categoryName, categoryItems) {
-        List<dynamic> itemsList = List.from(categoryItems); // Casting to a List from dynamic
-        List<MenuItem> itemList = itemsList.map((item) {
-          // Convert each item map to a MenuItem object
-          return MenuItem.fromJson(Map<String, dynamic>.from(item));
-        }).toList();
-        categoriesWithMenuItems[categoryName] = itemList;
+      data.forEach((category, items) {
+        List<MenuItem> itemList = (items as List).map((item) => MenuItem.fromJson(item)).toList();
+        categoriesWithMenuItems[category] = itemList;
       });
     } catch (e) {
       print(e.toString());
@@ -168,13 +163,13 @@ class FirestoreService {
         .replaceAll("CrownMerrillDiningHall", "Crown and Merrill")
         .replaceAll("PorterKresgeDiningHall", "Porter and Kresge")
         .replaceAll("RachelCarsonOakesDiningHall", "Rachel Carson and Oakes")
-    // This regex looks for groups of uppercase letters and ensures a space is inserted before, unless it's at the start
+        // This regex looks for groups of uppercase letters and ensures a space is inserted before, unless it's at the start
         .replaceAllMapped(RegExp(r'(?<!^)(?=[A-Z][a-z])'), (match) => ' ');
 
     return formattedName.trim(); // Trim any leading or trailing spaces
-  }
+    }
 
-  // New method to fetch user-specific menu items
+    // New method to fetch user-specific menu items
   Future<Map<String, List<MenuItem>>> fetchUserSpecificMenuItems(String diningHallId, String userId) async {
     // First, fetch the user's dietary preferences
     Map<String, bool> userPreferences = await fetchUserDietaryPreferences(userId);

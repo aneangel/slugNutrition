@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:slugnutrition/backend/controllers/menuItemClass.dart';
 import 'package:slugnutrition/backend/controllers/firestoreClass.dart';
 import 'package:slugnutrition/backend/controllers/menuItemClass.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
