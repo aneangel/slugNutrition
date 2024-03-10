@@ -61,31 +61,37 @@ class Dashboard extends StatelessWidget {
     // Example dining hall data - ideally, this would come from a model or service
     final List<Map<String, String>> diningHalls = [
       {
-        'name': ' Oakes \n Rachel-Carson',
-        'image': 'assets/images/dashboard/oc.png',
-        // Replace with your actual image paths
+        'displayName': 'Oakes \n Rachel-Carson', // Display name for UI
+        'firebaseName': 'RachelCarsonOakesDiningHall', // Firestore Document ID
+        'image': 'assets/images/dashboard/oc.png', // Image path
       },
       {
-        'name': ' Porter \n Kresge',
+        'displayName': 'Porter \n Kresge',
+        'firebaseName': 'PorterKresgeDiningHall',
         'image': 'assets/images/dashboard/pk.png',
       },
       {
-        'name': ' College 9\n John R Lewis',
+        'displayName': 'College 9\n John R Lewis',
+        'firebaseName': 'CollegeNineJohnR.LewisDiningHall',
         'image': 'assets/images/dashboard/cj.png',
       },
       {
-        'name': ' Cowell \n Stevenson',
+        'displayName': 'Cowell \n Stevenson',
+        'firebaseName': 'CowellStevensonDiningHall',
         'image': 'assets/images/dashboard/cs.png',
       },
       {
-        'name': ' Crown \n Merrill',
+        'displayName': 'Crown \n Merrill',
+        'firebaseName': 'CrownMerrillDiningHall',
         'image': 'assets/images/dashboard/cm.png',
       },
       {
-        'name': ' Cafés',
+        'displayName': 'Cafés',
+        'firebaseName': 'CafesDiningHall', // Example, adjust based on actual Firestore document ID
         'image': 'assets/images/dashboard/cafe.png',
       },
     ];
+
 
     return SafeArea(
       child: Scaffold(
