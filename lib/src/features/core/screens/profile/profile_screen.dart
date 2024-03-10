@@ -18,6 +18,7 @@ import '../../../../repository/authentication_repository/authentication_reposito
 import '/src/features/core/screens/update_password/updatepassword.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '/src/features/core/screens/faq/faq.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '/src/features/core/controllers/profile_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -39,6 +40,23 @@ class ProfileScreen extends StatelessWidget {
       }
     }
     return null;
+  }
+
+  Future<String> getRandomImageUrl() async {
+    final List<String> imageNames = [
+      'pic1.jpg', 'pic2.jpg', 'pic3.jpg', 'pic4.jpg', 'pic5.jpg',
+      'pic6.jpg', 'pic7.jpg', 'pic8.jpg', 'pic9.jpg', 'pic10.jpg',
+      'pic11.jpg', 'pic12.jpg', 'pic13.jpg',
+    ];
+
+
+    // Logic to fetch image URLs from Firebase Storage
+    // For example, let's assume you have a reference to the folder containing images
+    // Randomly pick an image
+    final String randomImageName = (imageNames..shuffle()).first;
+    String imageUrl = await FirebaseStorage.instance.ref(randomImageName).getDownloadURL();
+
+    return imageUrl;
   }
 
 
@@ -81,15 +99,28 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             children: [
               /// -- IMAGE with ICON
-              FutureBuilder<String?>(
-                future: getUserProfileImageUrl(),
-                builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                  return ImageWithIcon(
-                    imageUrl: snapshot.data,
-                    onImageUpdate: () {
-                      // Handle profile image update
-                    },
-                  );
+              FutureBuilder<String>(
+                future: getRandomImageUrl(), // Call the method to get a random image URL
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      return CircleAvatar(
+                        radius: 50, // Adjust the radius to fit your layout
+                        backgroundImage: NetworkImage(snapshot.data!),
+                        backgroundColor: Colors.transparent,
+                      );
+                    } else {
+                      // If there's an error, display a placeholder or an error widget
+                      return CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey.shade200,
+                        child: Icon(Icons.error, color: Colors.grey.shade800),
+                      );
+                    }
+                  } else {
+                    // While waiting for the async operation to complete, show a loading indicator.
+                    return CircularProgressIndicator();
+                  }
                 },
               ),
               const SizedBox(height: 10),
