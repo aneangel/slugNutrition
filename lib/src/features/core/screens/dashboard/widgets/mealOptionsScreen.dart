@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'mealDetailsScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:slugnutrition/backend/controllers/firestoreClass.dart';
 
 class MealOptionsScreen extends StatelessWidget {
   final String hallName;
@@ -26,8 +28,32 @@ class MealOptionsScreen extends StatelessWidget {
     // ... other meal options ...
   ];
 
+  // // A method to navigate to MealDetailsScreen after fetching all menu items
+  // // Inside MealOptionsScreen, when you navigate:
+  // void navigateToMealDetails(BuildContext context, String mealCategory) async {
+  //   FirestoreService firestoreService = FirestoreService();
+  //   var allMenuItemsFuture = firestoreService.fetchMenuItemsForDiningHall(hallName);
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => MealDetailsScreen(
+  //         hallName: hallName,
+  //         mealCategory: mealCategory,
+  //         allMenuItemsFuture: allMenuItemsFuture,
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  String formatHallName(String hallName) {
+    // Adjust this method based on your hallName patterns and Firestore document IDs
+    return hallName.replaceAll(RegExp(r'\s+|\n'), '');
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    print("Current hallName: $hallName");
     return Scaffold(
       appBar: AppBar(
         title: Text(hallName),
@@ -50,16 +76,25 @@ class MealOptionsScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MealDetailsScreen(
-                      hallName: hallName,
-                      mealCategory: mealOptions[index]['name']!,
+              onTap: () async {
+                String formattedHallName = formatHallName(hallName);
+                print("Formatted hallName: $formattedHallName"); // Debug print
+                var allMenuItemsFuture = FirestoreService().fetchMenuItemsForDiningHall(formattedHallName);
+                allMenuItemsFuture.then((data) {
+                  print("Fetched data: $data");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MealDetailsScreen(
+                        hallName: formattedHallName,
+                        mealCategory: mealOptions[index]['name']!,
+                        allMenuItemsFuture: allMenuItemsFuture,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }).catchError((error) {
+                  print("Error fetching data: $error");
+                });
               },
               child: Stack(
                 children: [

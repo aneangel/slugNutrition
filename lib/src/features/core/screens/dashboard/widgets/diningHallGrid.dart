@@ -9,11 +9,11 @@ class DiningHallGrid extends StatelessWidget {
     required this.diningHalls,
   }) : super(key: key);
 
-  void navigateToMealOptions(BuildContext context, String hallName) {
+  void navigateToMealOptions(BuildContext context, Map<String, String> diningHall) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MealOptionsScreen(hallName: hallName), // You need to define MealOptionsScreen
+        builder: (context) => MealOptionsScreen(hallName: diningHall['firebaseName']!), // Use firebaseName here
       ),
     );
   }
@@ -32,8 +32,9 @@ class DiningHallGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
+        final Map<String, String> diningHall = diningHalls[index];
         return InkWell(
-          onTap: () => navigateToMealOptions(context, diningHalls[index]['name']!),
+          onTap: () => navigateToMealOptions(context, diningHall),
           child: Card(
             color: Color(0xFFF5F5F7),
             elevation: 10,
@@ -50,7 +51,7 @@ class DiningHallGrid extends StatelessWidget {
                     width: 70,
                     height: 70,
                     child: Image.asset(
-                      diningHalls[index]['image']!,
+                      diningHall['image'] ?? '', // Provide a default or placeholder image path if 'image' is null
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -59,7 +60,7 @@ class DiningHallGrid extends StatelessWidget {
                   left: 8,
                   bottom: 8,
                   child: Text(
-                    diningHalls[index]['name']!,
+                    diningHall['displayName'] ?? 'Unknown', // Use 'displayName' and provide a fallback
                     style: TextStyle(
                       color: Color(0xFF003366),
                       fontWeight: FontWeight.bold,
