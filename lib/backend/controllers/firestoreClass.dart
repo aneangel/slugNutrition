@@ -4,15 +4,36 @@ import 'menuItemClass.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  // // Fetches categories and their menu items for a specific dining hall
+  // Future<Map<String, List<MenuItem>>> fetchCategoriesAndMenuItems(String diningHallId) async {
+  //   Map<String, List<MenuItem>> categoriesWithMenuItems = {};
+  //   try {
+  //     DocumentSnapshot snapshot = await _db.collection('Dining Hall Menus').doc(diningHallId).get();
+  //     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+  //     data.forEach((category, items) {
+  //       List<MenuItem> itemList = (items as List).map((item) => MenuItem.fromJson(item)).toList();
+  //       categoriesWithMenuItems[category] = itemList;
+  //     });
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  //   return categoriesWithMenuItems;
+  // }
+
   // Fetches categories and their menu items for a specific dining hall
   Future<Map<String, List<MenuItem>>> fetchCategoriesAndMenuItems(String diningHallId) async {
     Map<String, List<MenuItem>> categoriesWithMenuItems = {};
     try {
       DocumentSnapshot snapshot = await _db.collection('Dining Hall Menus').doc(diningHallId).get();
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-      data.forEach((category, items) {
-        List<MenuItem> itemList = (items as List).map((item) => MenuItem.fromJson(item)).toList();
-        categoriesWithMenuItems[category] = itemList;
+      Map<String, dynamic> categories = data['categories'];
+      categories.forEach((categoryName, categoryItems) {
+        List<dynamic> itemsList = List.from(categoryItems); // Casting to a List from dynamic
+        List<MenuItem> itemList = itemsList.map((item) {
+          // Convert each item map to a MenuItem object
+          return MenuItem.fromJson(Map<String, dynamic>.from(item));
+        }).toList();
+        categoriesWithMenuItems[categoryName] = itemList;
       });
     } catch (e) {
       print(e.toString());
