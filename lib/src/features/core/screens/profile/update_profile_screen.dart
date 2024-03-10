@@ -77,7 +77,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       fullName: _nameController.text,
       phoneNo: _phoneNoController.text,
       // Preserve the id and password (if needed) from the original user data
-      id: controller.currentUser.id, // You need to implement currentUser in your controller
+      //id: controller.currentUser.id, // You need to implement currentUser in your controller
       password: controller.currentUser.password, // Handle password appropriately
     );
 

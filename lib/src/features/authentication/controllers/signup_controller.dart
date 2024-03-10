@@ -2,60 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '/src/features/authentication/models/user_model.dart';
 import '/src/repository/user_repository/user_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../repository/authentication_repository/authentication_repository.dart';
 
 class SignUpController extends GetxController {
-  static SignUpController get instance => Get.find();
+  static SignUpController get to => Get.find();
 
-  final showPassword = false.obs;
-  final isGoogleLoading = false.obs;
-  final isFacebookLoading = false.obs;
   GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
-
-  // TextField Controllers to get data from TextFields
   final email = TextEditingController();
   final password = TextEditingController();
   final fullName = TextEditingController();
   final phoneNo = TextEditingController();
-
-  /// Loader
   final isLoading = false.obs;
+  final showPassword = false.obs; // Add this line
+  final isFacebookLoading = false.obs; // Add this line
+  final isGoogleLoading = false.obs; // Add this line
 
-  // As in the AuthenticationRepository we are calling _setScreen() Method
-  // so, whenever there is change in the user state(), screen will be updated.
-  // Therefore, when new user is authenticated, AuthenticationRepository() detects
-  // the change and call _setScreen() to switch screens
-
-  /// Register New User using either [EmailAndPassword] OR [PhoneNumber] authentication
   Future<void> createUser() async {
+    if (!signupFormKey.currentState!.validate()) return;
+    isLoading(true);
+
     try {
-      isLoading.value = true;
-      if (!signupFormKey.currentState!.validate()) {
-        isLoading.value = false;
-        return;
-      }
+      // Register the user with email and password
+      await AuthenticationRepository.instance.registerWithEmailAndPassword(email.text.trim(), password.text.trim());
 
-      /// For Phone Authentication
-      // SignUpController.instance.phoneAuthentication(controller.phoneNo.text.trim());
-      // Get.to(() => const OTPScreen());
-
-      // Get User and Pass it to Controller
+      // Create a UserModel instance with the user's data
       final user = UserModel(
         email: email.text.trim(),
-        password: password.text.trim(),
         fullName: fullName.text.trim(),
         phoneNo: phoneNo.text.trim(),
       );
 
-      // Authenticate User first
-      final auth = AuthenticationRepository.instance;
-      await auth.registerWithEmailAndPassword(user.email, user.password!);
-      await UserRepository.instance.createUser(user);
-      auth.setInitialScreen();
+      // Store the user's profile form data in Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.email) // Use the user's email as the document ID
+          .collection('forms')
+          .doc('profile_form')
+          .set(user.toJson());
 
+      // Handle successful registration (e.g., navigate to another screen or show a success message)
     } catch (e) {
-      isLoading.value = false;
       Get.snackbar("Error", e.toString(), snackPosition: SnackPosition.BOTTOM, duration: const Duration(seconds: 5));
+    } finally {
+      isLoading(false);
     }
   }
 

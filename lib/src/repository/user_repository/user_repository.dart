@@ -96,7 +96,7 @@ class UserRepository extends GetxController {
   /// Update User details
   Future<void> updateUserRecord(UserModel user) async {
     try {
-      await _db.collection("Users").doc(user.id).update(user.toJson());
+      await _db.collection("Users").doc(user.email).update(user.toJson());
     } on FirebaseAuthException catch (e) {
       final result = TExceptions.fromCode(e.code);
       throw result.message;
