@@ -43,4 +43,4 @@ app.*.map.json
 /android/app/release
 
 # Authentication security Key must never be on public repository
-/backend/key.json
+/lib/backend/key.json

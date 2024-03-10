@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'mealDetailsScreen.dart';
 
 class MealOptionsScreen extends StatelessWidget {
   final String hallName;
@@ -50,8 +51,15 @@ class MealOptionsScreen extends StatelessWidget {
             ),
             child: InkWell(
               onTap: () {
-                // Handle the tap action here
-                print('Tapped on ${mealOptions[index]['name']}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MealDetailsScreen(
+                      hallName: hallName,
+                      mealCategory: mealOptions[index]['name']!,
+                    ),
+                  ),
+                );
               },
               child: Stack(
                 children: [
