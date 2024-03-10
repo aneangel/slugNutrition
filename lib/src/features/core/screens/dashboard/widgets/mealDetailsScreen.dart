@@ -15,7 +15,7 @@ class MealDetailsScreen extends StatefulWidget {
 }
 
 class _MealDetailsScreenState extends State<MealDetailsScreen> {
-  late Future<Map<String, List<MenuItem>>> mealItems;
+  Future<Map<String, List<MenuItem>>>? mealItems; // Changed from 'late' to nullable
 
   @override
   void initState() {
@@ -24,19 +24,18 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
   }
 
   void fetchMealData() async {
-  FirestoreService firestoreService = FirestoreService();
-  String? userId = await UserRepository.instance.fetchCurrentUserId();
-  if (userId == null) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
-  } else {
-    setState(() {
-      mealItems = firestoreService.fetchUserSpecificMenuItems(widget.hallName, userId);
-    });
+    FirestoreService firestoreService = FirestoreService();
+    String? userId = await UserRepository.instance.fetchCurrentUserId();
+    if (userId == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } else {
+      setState(() {
+        mealItems = firestoreService.fetchUserSpecificMenuItems(widget.hallName, userId);
+      });
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,31 +43,33 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
       appBar: AppBar(
         title: Text('${widget.mealCategory} Options'),
       ),
-      body: FutureBuilder<Map<String, List<MenuItem>>>(
-        future: mealItems,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else {
-            // Filter the items for the selected meal category
-            List<MenuItem> itemsForCategory = snapshot.data?[widget.mealCategory] ?? [];
+      body: mealItems == null 
+        ? Center(child: CircularProgressIndicator()) // Show loading indicator while mealItems is null
+        : FutureBuilder<Map<String, List<MenuItem>>>(
+            future: mealItems,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text("Error: ${snapshot.error}"));
+              } else {
+                // Filter the items for the selected meal category
+                List<MenuItem> itemsForCategory = snapshot.data?[widget.mealCategory] ?? [];
 
-            return ListView.builder(
-              itemCount: itemsForCategory.length,
-              itemBuilder: (context, index) {
-                MenuItem item = itemsForCategory[index];
-                return ListTile(
-                  title: Text(item.name),
-                  subtitle: Text('Calories:'),
-                  // Add more details as needed
+                return ListView.builder(
+                  itemCount: itemsForCategory.length,
+                  itemBuilder: (context, index) {
+                    MenuItem item = itemsForCategory[index];
+                    return ListTile(
+                      title: Text(item.name),
+                      subtitle: Text('Calories: '), // Assuming calories is a field
+                      // Add more details as needed
+                    );
+                  },
                 );
-              },
-            );
-          }
-        },
-      ),
+              }
+            },
+          ),
     );
   }
 }
