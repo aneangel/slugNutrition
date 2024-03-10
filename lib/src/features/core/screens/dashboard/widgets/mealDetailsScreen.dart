@@ -39,7 +39,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
   }
 
   void fetchDiningHallMenuItems() async {
-    var menuItems = await _firestoreService.fetchMenuItemsForDiningHall("CollegeNineJohnR.LewisDiningHall");
+    var menuItems = await _firestoreService.fetchCategoriesForMeal("CollegeNineJohnR.LewisDiningHall","breakfast");
     print(menuItems); // This will print the fetched menu items to your console
   }
 

@@ -60,8 +60,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: TAppTheme.lightTheme,
-      darkTheme: TAppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       initialBinding: BindingsBuilder(() {
         Get.put(AuthenticationRepository());
         Get.put(UserRepository());

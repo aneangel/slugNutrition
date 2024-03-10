@@ -79,7 +79,8 @@ class MealOptionsScreen extends StatelessWidget {
               onTap: () async {
                 String formattedHallName = formatHallName(hallName);
                 print("Formatted hallName: $formattedHallName"); // Debug print
-                var allMenuItemsFuture = FirestoreService().fetchMenuItemsForDiningHall(formattedHallName);
+                var mealName = mealOptions[index]['name'] ?? 'defaultMealName';
+                var allMenuItemsFuture = FirestoreService().fetchCategoriesForMeal(formattedHallName,mealName);
                 allMenuItemsFuture.then((data) {
                   print("Fetched data: $data");
                   Navigator.push(
