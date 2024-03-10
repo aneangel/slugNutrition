@@ -95,4 +95,26 @@ class FirestoreService {
     }
     return preferences;
   }
+
+  // Fetches categories for a specific dining hall
+  Future<List<Map<String, dynamic>>> fetchCategories(String diningHallId) async {
+    List<Map<String, dynamic>> categoriesList = [];
+    
+    try {
+      DocumentSnapshot snapshot = await _db.collection('Dining Hall Menus').doc(diningHallId).get();
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+      var categories = data['categories'] as Map<String, dynamic>;
+      categories.forEach((categoryName, items) {
+        // each category has an array of items and you want to get the name of the first item.
+        String itemName = (items as List).isNotEmpty ? items[0]['name'] : 'No Item';
+        categoriesList.add({
+          'name': categoryName,
+          'itemName': itemName, // This could represent a title or description for the category
+        });
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+    return categoriesList;
+  }
 }
