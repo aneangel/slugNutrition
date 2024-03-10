@@ -130,4 +130,21 @@ class UserRepository extends GetxController {
       throw "Error fetching record.";
     }
   }
+
+  // This method fetches the currently logged-in user's UID.
+  Future<String?> fetchCurrentUserId() async {
+    try {
+      final User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        // User is signed in
+        return currentUser.uid; // Return the UID of the currently logged-in user
+      } else {
+        // No user is signed in
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching current user's UID: $e");
+      return null;
+    }
+  }
 }

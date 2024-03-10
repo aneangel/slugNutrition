@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:slugnutrition/backend/controllers/menuItemClass.dart';
 import 'package:slugnutrition/backend/controllers/firestoreClass.dart';
+import 'package:slugnutrition/src/repository/user_repository/user_repository.dart';
+import 'package:slugnutrition/src/features/authentication/screens/login/login_screen.dart';
 
 class MealDetailsScreen extends StatefulWidget {
   final String hallName;
@@ -18,11 +20,23 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    FirestoreService firestoreService = FirestoreService();
-    // Assuming you have a way to get the userId, for example, from a logged-in user session
-    String userId = "some_user_id";
-    mealItems = firestoreService.fetchUserSpecificMenuItems(widget.hallName, userId);
+    fetchMealData();
   }
+
+  void fetchMealData() async {
+  FirestoreService firestoreService = FirestoreService();
+  String? userId = await UserRepository.instance.fetchCurrentUserId();
+  if (userId == null) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  } else {
+    setState(() {
+      mealItems = firestoreService.fetchUserSpecificMenuItems(widget.hallName, userId);
+    });
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +47,13 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
       body: FutureBuilder<Map<String, List<MenuItem>>>(
         future: mealItems,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
-            }
-
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else {
             // Filter the items for the selected meal category
-            List<MenuItem> itemsForCategory = snapshot.data![widget.mealCategory] ?? [];
+            List<MenuItem> itemsForCategory = snapshot.data?[widget.mealCategory] ?? [];
 
             return ListView.builder(
               itemCount: itemsForCategory.length,
@@ -52,8 +66,6 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
                 );
               },
             );
-          } else {
-            return Center(child: CircularProgressIndicator());
           }
         },
       ),
