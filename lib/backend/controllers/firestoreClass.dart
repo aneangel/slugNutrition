@@ -108,6 +108,16 @@ class FirestoreService {
           allMenuItems[categoryName] = itemList;
         });
 
+        // Sort the categories by their names
+        var sortedKeys = allMenuItems.keys.toList()..sort();
+        Map<String, List<MenuItem>> sortedAllMenuItems = {};
+        for (var key in sortedKeys) {
+          sortedAllMenuItems[key] = allMenuItems[key]!;
+        }
+
+// Return the sorted map instead
+        return sortedAllMenuItems;
+
         // Print allMenuItems before returning
         // print("Fetched data:");
         // allMenuItems.forEach((category, items) {
@@ -120,7 +130,7 @@ class FirestoreService {
     } catch (e) {
       print('Error fetching menu items for dining hall $diningHallId: $e');
     }
-    return allMenuItems;
+    return {}; // Return an empty map if there was an error or no data
   }
 
 
