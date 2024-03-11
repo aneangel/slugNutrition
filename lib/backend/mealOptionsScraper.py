@@ -30,8 +30,8 @@ dining_halls = [
 ]
 
 for hall in dining_halls:
-    # Sanitize the hall name to create a valid Firestore document ID
-    hall_doc_id = hall.replace('/', '_').replace(' ', '_')
+    # Simplify the dining hall name to use as the document ID
+    hall_doc_id = hall.replace('/', '').replace(' ', '')
     # Reference to the document for the dining hall
     hall_doc_ref = collection_ref.document(hall_doc_id)
 
@@ -134,7 +134,7 @@ for hall in dining_halls:
 
                 # Save each category and its dishes in the meal type collection
                 for category, dishes in deduplicated_menu.items():
-                    category_sanitized = category.replace(' ', '_').replace('--', '').strip()
+                    category_sanitized = category.replace(' ', '').replace('--', '').strip()
                     category_doc_ref = meal_type_ref.document(category_sanitized)
                     category_doc_ref.set({'dishes': dishes})
 
