@@ -93,45 +93,76 @@ class FirestoreService {
     }
   }
 
-  Future<Map<String, List<MenuItem>>> fetchMenuItemsForDiningHall(String diningHallId) async {
-    Map<String, List<MenuItem>> allMenuItems = {};
+//   Future<Map<String, List<MenuItem>>> fetchMenuItemsForDiningHall(String diningHallId) async {
+//     Map<String, List<MenuItem>> allMenuItems = {};
+//     try {
+//       DocumentSnapshot snapshot = await _db.collection('dining_hall_information').doc(diningHallId).get();
+//       if (snapshot.exists && snapshot.data() != null) {
+//         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+//         Map<String, dynamic> categories = data['categories'];
+//         print("Raw Data: $data");
+//         print("Categories: $categories");
+//         categories.forEach((categoryName, categoryItems) {
+//           List<dynamic> itemsList = List.from(categoryItems);
+//           List<MenuItem> itemList = itemsList.map((item) => MenuItem.fromJson(Map<String, dynamic>.from(item))).toList();
+//           allMenuItems[categoryName] = itemList;
+//         });
+//
+//         // Sort the categories by their names
+//         var sortedKeys = allMenuItems.keys.toList()..sort();
+//         Map<String, List<MenuItem>> sortedAllMenuItems = {};
+//         for (var key in sortedKeys) {
+//           sortedAllMenuItems[key] = allMenuItems[key]!;
+//         }
+//
+// // Return the sorted map instead
+//         return sortedAllMenuItems;
+//
+//         // Print allMenuItems before returning
+//         // print("Fetched data:");
+//         // allMenuItems.forEach((category, items) {
+//         //   print("Category: $category");
+//         //   for (var item in items) {
+//         //     print("Item: ${item.name}, Attributes: ${item.attributes}");
+//         //   }
+//         // });
+//       }
+//     } catch (e) {
+//       print('Error fetching menu items for dining hall $diningHallId: $e');
+//     }
+//     return {}; // Return an empty map if there was an error or no data
+//   }
+  Future<Map<String, List<MenuItem>>> fetchCategoriesForMeal(String diningHallId, String mealType) async {
+    Map<String, List<MenuItem>> allCategories = {};
     try {
-      DocumentSnapshot snapshot = await _db.collection('Dining Hall Menus').doc(diningHallId).get();
+      DocumentSnapshot snapshot = await _db.collection('dining_hall_information').doc(diningHallId).get();
       if (snapshot.exists && snapshot.data() != null) {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-        Map<String, dynamic> categories = data['categories'];
-        // print("Raw Data: $data");
-        // print("Categories: $categories");
-        categories.forEach((categoryName, categoryItems) {
-          List<dynamic> itemsList = List.from(categoryItems);
-          List<MenuItem> itemList = itemsList.map((item) => MenuItem.fromJson(Map<String, dynamic>.from(item))).toList();
-          allMenuItems[categoryName] = itemList;
-        });
 
-        // Sort the categories by their names
-        var sortedKeys = allMenuItems.keys.toList()..sort();
-        Map<String, List<MenuItem>> sortedAllMenuItems = {};
-        for (var key in sortedKeys) {
-          sortedAllMenuItems[key] = allMenuItems[key]!;
+        // Access the meal type (e.g., Breakfast)
+        if (data.containsKey(mealType) && data[mealType] is Map<String, dynamic>) {
+          Map<String, dynamic> mealData = data[mealType];
+
+          // Access the categories within the meal type
+          if (mealData.containsKey('categories') && mealData['categories'] is Map<String, dynamic>) {
+            Map<String, dynamic> categories = mealData['categories'];
+
+            // Iterate over each category
+            categories.forEach((categoryName, categoryItems) {
+              if (categoryItems is List<dynamic>) {
+                List<MenuItem> itemList = categoryItems.map((item) => MenuItem.fromJson(Map<String, dynamic>.from(item))).toList();
+                allCategories[categoryName] = itemList;
+              }
+            });
+          }
         }
-
-// Return the sorted map instead
-        return sortedAllMenuItems;
-
-        // Print allMenuItems before returning
-        // print("Fetched data:");
-        // allMenuItems.forEach((category, items) {
-        //   print("Category: $category");
-        //   for (var item in items) {
-        //     print("Item: ${item.name}, Attributes: ${item.attributes}");
-        //   }
-        // });
       }
     } catch (e) {
-      print('Error fetching menu items for dining hall $diningHallId: $e');
+      print('Error fetching menu items for dining hall $diningHallId and meal type $mealType: $e');
     }
-    return {}; // Return an empty map if there was an error or no data
+    return allCategories;
   }
+
 
 
 

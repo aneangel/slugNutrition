@@ -207,7 +207,13 @@ class AuthenticationRepository extends GetxController {
   }
 
   /// [PhoneAuthentication] - REGISTER
+  /// [PhoneAuthentication] - REGISTER
   Future<void> phoneAuthentication(String phoneNo) async {
+    // Validate the phone number length
+    if (!RegExp(r'^\d{9}$').hasMatch(phoneNo)) {
+      throw 'Please enter a valid 9 digit phone number';
+    }
+
     try {
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNo,
@@ -232,6 +238,7 @@ class AuthenticationRepository extends GetxController {
       throw e.toString().isEmpty ? 'Unknown Error Occurred. Try again!' : e.toString();
     }
   }
+
 
   /// [PhoneAuthentication] - VERIFY PHONE NO BY OTP
   Future<bool> verifyOTP(String otp) async {
