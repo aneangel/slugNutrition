@@ -127,7 +127,10 @@ def process_items(driver, db, dining_hall, meal_type):
     for item_data in items_data:
         # print("Entering data sending loop\n")
         # Firestore write logic remains unchanged
-        H_doc_ref = db.collection('Nutritional Facts').document(dining_hall.replace('/', '_').replace(' ', '_'))
+        H_doc_ref = db.collection('Nutritional Facts').document(dining_hall.replace('/', '').replace(' ', ''))
+        H_doc_ref.set({
+            'last_updated': firestore.SERVER_TIMESTAMP
+        }, merge=True)
         meal_type_ref = H_doc_ref.collection(meal_type)
         item_doc_ref = meal_type_ref.document(item_data['name'])
         item_doc_ref.set({
