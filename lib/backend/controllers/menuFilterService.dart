@@ -66,13 +66,37 @@ class MenuFilterService {
   }
 
   bool _containsAllergens(FilteredMenuItem item, Map<String, bool> allergies) {
-    bool contains = allergies.entries.any((entry) => entry.value && item.tags.contains('contains${entry.key}'));
+    // If "None" is true, it means no allergies, so return false for contains allergens.
+    if (allergies['None'] == true) {
+      return false;
+    }
+
+    // Check for specific allergies.
+    bool contains = allergies.entries.any((entry) {
+      // Skip the "None" entry.
+      if (entry.key != "None") {
+        return entry.value && item.tags.any((tag) => tag.toLowerCase().contains(entry.key.toLowerCase()));
+      }
+      return false;
+    });
     print("Contains allergens: $contains");
     return contains;
   }
 
   bool _isDisliked(FilteredMenuItem item, Map<String, bool> dislikes) {
-    bool isDisliked = dislikes.entries.any((entry) => entry.value && item.tags.contains('contains${entry.key}'));
+    // If "None" is true, it means no dislikes, so return false for is disliked.
+    if (dislikes['None'] == true) {
+      return false;
+    }
+
+    // Check for specific dislikes.
+    bool isDisliked = dislikes.entries.any((entry) {
+      // Skip the "None" entry.
+      if (entry.key != "None") {
+        return entry.value && item.tags.any((tag) => tag.toLowerCase().contains(entry.key.toLowerCase()));
+      }
+      return false;
+    });
     print("Is disliked: $isDisliked");
     return isDisliked;
   }
