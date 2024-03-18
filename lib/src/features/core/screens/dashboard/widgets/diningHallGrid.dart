@@ -10,12 +10,20 @@ class DiningHallGrid extends StatelessWidget {
   }) : super(key: key);
 
   void navigateToMealOptions(BuildContext context, Map<String, String> diningHall) {
+    String hallName = formatDiningHallName(diningHall['firebaseName']!);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MealOptionsScreen(hallName: diningHall['firebaseName']!), // Use firebaseName here
+        builder: (context) => MealOptionsScreen(hallName: hallName), // Pass the formatted name
       ),
     );
+  }
+
+  String formatDiningHallName(String firebaseName) {
+    String newName = firebaseName.replaceAll('DinningHall', 'Dining Hall');
+    newName = newName.replaceAllMapped(RegExp(r'([A-Z])/([A-Z])'), (Match m) => '${m[1]} / ${m[2]}');
+    newName = newName.replaceAllMapped(RegExp(r'([a-z])([A-Z])'), (Match m) => '${m[1]} ${m[2]}');
+    return newName;
   }
 
   @override
