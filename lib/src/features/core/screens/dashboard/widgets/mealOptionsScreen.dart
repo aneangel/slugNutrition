@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'mealDetailsScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:slugnutrition/backend/controllers/firestoreClass.dart';
+import 'package:slugnutrition/backend/controllers/menuFilterService.dart'; // Assume this is where your MenuFilterService is defined
 
 class MealOptionsScreen extends StatelessWidget {
   final String hallName;
@@ -22,7 +23,7 @@ class MealOptionsScreen extends StatelessWidget {
       'image': 'assets/images/meals/chicken.png',
     },
     {
-      'name': 'Late Night',
+      'name': 'Late_Night',
       'image': 'assets/images/meals/lateNight.png',
     },
     // ... other meal options ...
@@ -53,7 +54,6 @@ class MealOptionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Current hallName: $hallName");
     return Scaffold(
       appBar: AppBar(
         title: Text(hallName),
@@ -78,22 +78,24 @@ class MealOptionsScreen extends StatelessWidget {
             child: InkWell(
               onTap: () async {
                 String formattedHallName = formatHallName(hallName);
-                print("Formatted hallName: $formattedHallName"); // Debug print
-                var allMenuItemsFuture = FirestoreService().fetchMenuItemsForDiningHall(formattedHallName);
-                allMenuItemsFuture.then((data) {
-                  print("Fetched data: $data");
+                // print("Formatted hallName OP: $formattedHallName");
+                // print("hallname OP: $hallName");// Debug print
+                var mealName = mealOptions[index]['name'] ?? 'defaultMealName';
+                // print("mealName: $mealName");
+                var filteredMenuItemsFuture = FirestoreService().fetchAndFilterCategoriesForMeal(formatHallName(hallName), mealName);
+                filteredMenuItemsFuture.then((filteredData) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => MealDetailsScreen(
-                        hallName: formattedHallName,
-                        mealCategory: mealOptions[index]['name']!,
-                        allMenuItemsFuture: allMenuItemsFuture,
+                        hallName: hallName,
+                        mealCategory: mealName,
+                        allMenuItemsFuture: Future.value(filteredData), // Pass the filtered data to MealDetailsScreen
                       ),
                     ),
                   );
                 }).catchError((error) {
-                  print("Error fetching data: $error");
+                  print("Error fetching and filtering data: $error");
                 });
               },
               child: Stack(

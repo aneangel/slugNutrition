@@ -26,4 +26,15 @@ class DietaryPreferences {
     'dislikes': dislikes,
     'consent': consent,
   };
+
+  factory DietaryPreferences.fromJson(Map<String, dynamic> json) {
+    return DietaryPreferences(
+      dietaryRestriction: json['dietaryRestriction'] ?? 'None',
+      dietaryLaw: json['dietaryLaw'] ?? 'None',
+      allergies: Map<String, bool>.from(json['allergies']),
+      preferences: Map<String, bool>.from(json['preferences']),
+      dislikes: Map<String, bool>.from(json['dislikes']),
+      consent: json['consent'] ?? false,
+    );
+  }
 }

@@ -179,21 +179,80 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+
+
+  // _showDeleteUserModal(BuildContext context) {
+  //   Get.defaultDialog(
+  //     title: "Delete Account",
+  //     content: Text("This will permanently delete your account and all associated data. Are you sure you want to proceed?"),
+  //     onCancel: () => Get.back(),
+  //     onConfirm: () {
+  //       Get.back(); // Close the dialog
+  //       _promptForReauthentication(context); // Prompt for re-authentication
+  //     },
+  //     textCancel: "Cancel",
+  //     textConfirm: "Delete",
+  //     confirmTextColor: Colors.white,
+  //     buttonColor: Colors.red, // Check if this named parameter exists in your version or adjust accordingly
+  //   );
+  // }
+
   _showDeleteUserModal(BuildContext context) {
     Get.defaultDialog(
-      title: "Delete Account",
-      content: Text("This will permanently delete your account and all associated data. Are you sure you want to proceed?"),
-      onCancel: () => Get.back(),
-      onConfirm: () {
-        Get.back(); // Close the dialog
-        _promptForReauthentication(context); // Prompt for re-authentication
-      },
-      textCancel: "Cancel",
-      textConfirm: "Delete",
-      confirmTextColor: Colors.white,
-      buttonColor: Colors.red, // Check if this named parameter exists in your version or adjust accordingly
+      titlePadding: const EdgeInsets.only(top: 20), // Added top padding for the title
+      title: "DELETE ACCOUNT",
+      titleStyle: const TextStyle(fontSize: 20),
+      content: Padding(
+        padding: const EdgeInsets.all(20), // Adjusted padding
+        child: Text(
+          "Do you want to permanently delete your account?",
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 18),
+        ),
+      ),
+      actions: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20), // Side margins for the buttons
+          child: ElevatedButton(
+            onPressed: () {
+              Get.back(); // Close the dialog
+              _promptForReauthentication(context); // Prompt for re-authentication
+            },
+            child: const Text("DELETE", style: TextStyle(color: Colors.white, fontSize: 16)), // Increased font size
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red, // Button color for delete action
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              side: BorderSide.none, // Remove border
+              minimumSize: const Size.fromHeight(45), // Height is specified, width will adapt to the padding
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20), // Side margins and reduced bottom margin for the buttons
+          child: ElevatedButton(
+            onPressed: () => Get.back(),
+            child: const Text("CANCEL", style: TextStyle(color: Colors.white, fontSize: 16)), // Increased font size
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey, // Button color for cancel action
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              side: BorderSide.none, // Remove border
+              minimumSize: const Size.fromHeight(45), // Height is specified, width will adapt to the padding
+            ),
+          ),
+        ),
+      ],
     );
   }
+
+
+
+
+
+
   _promptForReauthentication(BuildContext context) {
     TextEditingController passwordController = TextEditingController();
 
@@ -240,20 +299,77 @@ class ProfileScreen extends StatelessWidget {
   }
 
 
+  // _showLogoutModal() {
+  //   Get.defaultDialog(
+  //     title: "Logout",
+  //     titleStyle: const TextStyle(fontSize: 20),
+  //     content: const Padding(
+  //       padding: EdgeInsets.symmetric(vertical: 15.0),
+  //       child: Text("Are you sure, you want to Logout?"),
+  //     ),
+  //     confirm: TPrimaryButton(
+  //       isFullWidth: false,
+  //       onPressed: () => AuthenticationRepository.instance.logout(),
+  //       text: "Yes",
+  //     ),
+  //     cancel: SizedBox(width: 100, child: OutlinedButton(onPressed: () => Get.back(), child: const Text("No"))),
+  //   );
+  // }
   _showLogoutModal() {
     Get.defaultDialog(
-      title: "LOGOUT",
-      titleStyle: const TextStyle(fontSize: 20),
-      content: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 15.0),
-        child: Text("Are you sure, you want to Logout?"),
+      titlePadding: const EdgeInsets.only(top: 20),
+      title: "CONFIRM LOGOUT",
+      titleStyle: const TextStyle(fontSize: 25),
+      content: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Text(
+          "Are you sure, you want to Logout?",
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
       ),
-      confirm: TPrimaryButton(
-        isFullWidth: false,
-        onPressed: () => AuthenticationRepository.instance.logout(),
-        text: "Yes",
-      ),
-      cancel: SizedBox(width: 100, child: OutlinedButton(onPressed: () => Get.back(), child: const Text("No"))),
+      actions: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ElevatedButton(
+            onPressed: () => AuthenticationRepository.instance.logout(),
+            child: const Text("YES", style: TextStyle(color: Colors.white, fontSize: 16)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              side: BorderSide.none, // Ensure no borders
+              minimumSize: const Size.fromHeight(45),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ElevatedButton(
+            onPressed: () => Get.back(),
+            child: const Text("NO", style: TextStyle(color: Colors.white, fontSize: 16)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              side: BorderSide.none, // Ensure no borders
+              minimumSize: const Size.fromHeight(45),
+            ),
+          ),
+        ),
+      ],
     );
   }
+
+
+
+
+
+
+
+
 }
