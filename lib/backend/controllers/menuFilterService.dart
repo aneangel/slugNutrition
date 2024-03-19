@@ -14,7 +14,8 @@ import '/src/features/core/screens/profile/dietary_preferences/dietary_preferenc
 
 class FilteredMenuItem {
   final String name;
-  final List<String> tags; // Example: ['vegan', 'containsPeanuts']
+  final List<String> tags;
+  // final Map<String, dynamic> nutritionalFacts;
 
   FilteredMenuItem({required this.name, required this.tags});
 
@@ -22,6 +23,7 @@ class FilteredMenuItem {
     return FilteredMenuItem(
       name: json['name'],
       tags: List<String>.from(json['tags']),
+      // nutritionalFacts: json['nutritionalFacts'] ?? (),
     );
   }
 }
