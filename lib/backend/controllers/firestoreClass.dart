@@ -11,21 +11,51 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // // Fetches categories and their menu items for a specific dining hall
-  // Future<Map<String, List<MenuItem>>> fetchCategoriesAndMenuItems(String diningHallId) async {
-  //   Map<String, List<MenuItem>> categoriesWithMenuItems = {};
-  //   try {
-  //     DocumentSnapshot snapshot = await _db.collection('Dining Hall Menus').doc(diningHallId).get();
-  //     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-  //     data.forEach((category, items) {
-  //       List<MenuItem> itemList = (items as List).map((item) => MenuItem.fromJson(item)).toList();
-  //       categoriesWithMenuItems[category] = itemList;
-  //     });
-  //   } catch (e) {
-  //     print(e.toString());
+  // Future<Map<String, List<FilteredMenuItem>>> fetchMenuItemsWithNutritionalFacts(String diningHallId, String mealType) async {
+  //   Map<String, List<FilteredMenuItem>> filteredMenuItemsWithNutritionalFacts = {};
+  //
+  //   // Fetch filtered menu items (already filtered by user's dietary preferences)
+  //   Map<String, List<FilteredMenuItem>> filteredMenuItems = await fetchAndFilterCategoriesForMeal(diningHallId, mealType);
+  //
+  //   for (var category in filteredMenuItems.keys) {
+  //     List<FilteredMenuItem> updatedItems = [];
+  //     for (var filteredItem in filteredMenuItems[category]!) {
+  //       // Use try-catch block for error handling
+  //       try {
+  //         // Assuming the item's name is the document ID in the 'Nutritional Facts' collection
+  //         DocumentSnapshot nutritionSnapshot = await FirebaseFirestore.instance
+  //             .collection('Nutritional Facts')
+  //             .doc(diningHallId) // diningHallId should be the document ID that represents the dining hall
+  //             .collection(mealType) // mealType as subcollection
+  //             .doc(filteredItem.name) // filteredItem.name is the dish name
+  //             .get();
+  //
+  //         // Check if the document exists and has data
+  //         if (nutritionSnapshot.exists) {
+  //           Map<String, dynamic> nutritionData = nutritionSnapshot.data() as Map<String, dynamic>;
+  //
+  //           // Create a new FilteredMenuItem with nutritional facts
+  //           FilteredMenuItem updatedItem = FilteredMenuItem(
+  //             name: filteredItem.name,
+  //             tags: filteredItem.tags,
+  //             nutritionalFacts: nutritionData, // Add nutritionalFacts field in FilteredMenuItem class
+  //           );
+  //           updatedItems.add(updatedItem);
+  //         } else {
+  //           // Handle the case when there is no nutritional information for the item
+  //           updatedItems.add(filteredItem); // Add the item without nutritional info
+  //         }
+  //       } catch (e) {
+  //         print("Error fetching nutritional facts for item ${filteredItem.name}: $e");
+  //         // You may want to handle the error differently depending on your use case
+  //       }
+  //     }
+  //     filteredMenuItemsWithNutritionalFacts[category] = updatedItems;
   //   }
-  //   return categoriesWithMenuItems;
+  //
+  //   return filteredMenuItemsWithNutritionalFacts;
   // }
+
 
 
 
@@ -163,43 +193,30 @@ class FirestoreService {
     }
   }
 
+  Future<Map<String, dynamic>> fetchNutritionalFactsForItem(String itemName) async {
+    // Get a reference to the Firestore instance
+    FirebaseFirestore db = FirebaseFirestore.instance;
+
+    try {
+      // Try to get the document for the item
+      DocumentSnapshot snapshot = await db.collection('Nutritional Facts').doc(itemName).get();
+
+      // If the document exists, return its data
+      if (snapshot.exists) {
+        return snapshot.data() as Map<String, dynamic>;
+      } else {
+        // If the document doesn't exist, return an empty map
+        print("No nutritional facts found for $itemName");
+        return {};
+      }
+    } catch (e) {
+      // If there's an error, print it and return an empty map
+      print("Error fetching nutritional facts for $itemName: $e");
+      return {};
+    }
+  }
 
 
-
-
-
-
-
-
-  // Fetches categories and their menu items for a specific dining hall
-  // Future<Map<String, List<MenuItem>>> fetchCategoriesAndMenuItems(String diningHallId) async {
-  //   Map<String, List<MenuItem>> categoriesWithMenuItems = {};
-  //   try {
-  //     DocumentSnapshot snapshot = await _db.collection('Dining Hall Menus').doc(diningHallId).get();
-  //     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-  //     data.forEach((category, items) {
-  //       List<MenuItem> itemList = (items as List).map((item) => MenuItem.fromJson(item)).toList();
-  //       categoriesWithMenuItems[category] = itemList;
-  //     });
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  //   return categoriesWithMenuItems;
-  // }
-  //
-  // Future<List<String>> fetchDiningHallMenuNames() async {
-  //   List<String> menuNames = [];
-  //   try {
-  //     QuerySnapshot snapshot = await _db.collection('Dining Hall Menus').get();
-  //     for (var doc in snapshot.docs) {
-  //       String formattedName = formatDocumentName(doc.id);
-  //       menuNames.add(formattedName);
-  //     }
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  //   return menuNames;
-  // }
 
   // Method to reformat document names
   String formatDocumentName(String docId) {
@@ -214,33 +231,6 @@ class FirestoreService {
 
     return formattedName.trim(); // Trim any leading or trailing spaces
     }
-
-    // New method to fetch user-specific menu items
-  // Future<Map<String, List<MenuItem>>> fetchUserSpecificMenuItems(String diningHallId, String userId) async {
-  //   // First, fetch the user's dietary preferences
-  //   Map<String, bool> userPreferences = await fetchUserDietaryPreferences(userId);
-  //
-  //   // Next, fetch all menu items for the specified dining hall
-  //   Map<String, List<MenuItem>> allMenuItems = await fetchCategoriesAndMenuItems(diningHallId);
-  //
-  //   // Filter menu items based on user preferences
-  //   Map<String, List<MenuItem>> filteredMenuItems = {};
-  //   allMenuItems.forEach((category, items) {
-  //     List<MenuItem> filteredItems = items.where((item) {
-  //       // Check each item's attributes against user preferences
-  //       for (var attribute in item.attributes) {
-  //         if (userPreferences.containsKey(attribute) && !userPreferences[attribute]!) {
-  //           // If the user has a preference that contradicts this attribute, exclude the item
-  //           return false;
-  //         }
-  //       }
-  //       return true; // Include the item if none of its attributes are contradicted by user preferences
-  //     }).toList();
-  //     filteredMenuItems[category] = filteredItems;
-  //   });
-  //
-  //   return filteredMenuItems;
-  // }
 
   // Helper method to fetch user dietary preferences
   Future<Map<String, bool>> fetchUserDietaryPreferences(String userId) async {
